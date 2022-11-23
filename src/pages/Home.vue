@@ -12,21 +12,28 @@
     <page-container :page-config="pageConfig" >
         <v-img contain height="300" src="src/assets/logo.svg"/>
 
-        <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
+        <div class="text-body-2 font-weight-light mb-n1">Welcome to {{ count }}</div>
 
-        <h1 class="text-h2 font-weight-bold">Home</h1>
+        <h1 class="text-h2 font-weight-bold" v-on:click="increment()">Home</h1>
     </page-container>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue'
 const pageConfig = {
     title: 'Home'
 };
-export default {
-  setup() {
-    return {
-      pageConfig
-    }
-  },
-};
+
+// reactive state
+const count = ref(0)
+
+// functions that mutate state and trigger updates
+function increment() {
+  count.value++
+}
+
+// lifecycle hooks
+onMounted(() => {
+  console.log(`The initial count is ${count.value}.`)
+})
 </script>
