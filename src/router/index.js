@@ -22,6 +22,10 @@ const routes = [
     path: '/student-dashboard',
     component: () => import('@/pages/StudentDashboard.vue')
   },
+  {
+    path: '/student-startup',
+    component: () => import('@/pages/StudentStartup.vue')
+  }
 ];
 
 const router = createRouter({
