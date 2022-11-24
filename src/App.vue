@@ -1,6 +1,10 @@
 <template>
-  <v-app :theme="theme">
-    <RouterView/>
+  <v-app>
+    <v-main>
+      <v-container>
+          <router-view/>
+      </v-container>
+    </v-main>
     <BottomBar/>
   </v-app>
 </template>
