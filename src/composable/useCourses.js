@@ -1,14 +1,9 @@
-import { ref, isRef, onMounted, reactive } from 'vue'
+import { reactive } from 'vue'
 import axios from "axios";
-const courses = ref(0);
-const globalState = reactive({
-    courses: []
-  });
-
+const courses = reactive({
+    list: []
+});
 export function useCourses() {
-  // state encapsulated and managed by the composable
-    
-    console.log(courses);
     async function fetchCourses () {
         let request = null
 
@@ -16,7 +11,7 @@ export function useCourses() {
 
         try{
             const response = await request
-            globalState.courses = response.data.data.response_data
+            courses.list = response.data.data.response_data
         } catch(e){
             throw new Error(`Courses are null: `+err); 
         }      
@@ -24,6 +19,6 @@ export function useCourses() {
     
     return {
         fetchCourses,
-        globalState
+        courses
     }
 }

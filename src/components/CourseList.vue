@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-row dense>
             <v-col
-                v-for="(course, index) in globalState.courses"
+                v-for="(course, index) in courses.list"
                 :key="index"
                 cols="12"
                 >
@@ -33,20 +33,12 @@
 </template>
 
 
-<script >
+<script setup>
 import { useCourses } from '@/composable/useCourses.js'
 import { ref, onMounted } from 'vue'
 
-export default {
-    setup(){
-        const { globalState, fetchCourses } = 
-            useCourses();
-        fetchCourses();
-        return {
-        globalState
-        }
-    }
-}
+const { courses, fetchCourses } = useCourses();
+fetchCourses();
 
 
 

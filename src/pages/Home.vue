@@ -11,9 +11,9 @@
     </v-app-bar>
     <page-container>
         <v-img contain height="300" src="src/assets/logo.svg"/>
-        <Suspense>
-            <CoursesList/>
-        </Suspense>
+            <Suspense>
+                <CoursesList/>
+            </Suspense>
     </page-container>
 </template>
 
