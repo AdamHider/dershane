@@ -11,13 +11,18 @@ import PageContainer from './components/PageContainer.vue'
 
 // Composables
 import { createApp } from 'vue'
-import router from '@/router'
+import { createPinia } from 'pinia'
+import { router } from '@/router'
 
 // Plugins
 import { registerPlugins } from '@/plugins'
 
 
-const app = createApp(App).use(router);
+const app = createApp(App)
+
+app.use(createPinia());
+app.use(router);
+
 app.component('page-container', PageContainer);
 
 registerPlugins(app)

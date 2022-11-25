@@ -1,14 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { isAuthorized } from '@/store/user'
 //import routes from '~pages'
 
-const routes = [
+export const  routes = [
   {
     path: '',
     redirect: '/home'
   },
   {
     path: '/home',
-    component: () => import('@/pages/Home.vue')
+    component: () => import('@/pages/Home.vue'),
+  },
+  {
+    path: '/lessons-:category_id',
+    component: () => import('@/pages/Lessons.vue')
   },
   {
     path: '/classroom',
@@ -24,15 +29,26 @@ const routes = [
   },
   {
     path: '/student-startup',
-    component: () => import('@/pages/StudentStartup.vue')
+    component: () => import('@/pages/StudentStartup.vue'),
+    beforeEnter: () => !isAuthorized()
   }
 ];
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior() {
     return { top: 0 }
   },
 })
-export default router
+
+export function routerPush (name, params){
+  if (params !== undefined) {
+    return router.push({
+      name,
+      params,
+    })
+  } else {
+    return router.push({ name })
+  }
+}

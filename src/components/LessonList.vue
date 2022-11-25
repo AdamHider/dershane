@@ -2,11 +2,13 @@
     <v-container fluid>
         <v-row dense>
             <v-col
-                v-for="(course, index) in courses.list"
+                v-for="(lesson, index) in lessons.list"
                 :key="index"
                 cols="12"
                 >
-                <v-card :to="'/lessons-'+course.id" :image="'http://localhost:777/dershane/assets'+course.image">
+                <v-card :to="'/lesson_start#id='+lesson.id" :image="'http://localhost:777/dershane/assets'+lesson.image">
+                    
+
                     <v-card-actions>
                         <v-spacer></v-spacer>
 
@@ -24,10 +26,10 @@
 
 
 <script setup>
-import { useCourses } from '@/composable/useCourses.js'
+import { useLessons } from '@/composable/useLessons.js'
 import { ref, onMounted } from 'vue'
 
-const { courses, getList } = useCourses();
+const { lessons, getList } = useLessons();
 getList();
 
 

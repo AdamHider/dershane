@@ -1,36 +1,27 @@
 <template>
+  <v-app-bar color="primary" density="compact">
+      <template v-slot:prepend>
+          <v-btn icon="mdi-account-convert-outline" to="/student-startup"></v-btn>
+      </template>
+      <v-app-bar-title>Classroom</v-app-bar-title>
+      <template v-slot:append >
+          <v-btn icon="mdi-trophy-variant-outline" to=""></v-btn>
+      </template>
+  </v-app-bar>
     <page-container>
-        <v-img contain height="300" src="src/assets/logo.svg"/>
-
         <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
-
         <h1 class="text-h2 font-weight-bold">Classroom</h1>
     </page-container>
 </template>
 
 <script>
-const PageConfig = {
-    title: 'Classroom',
-    header:{
-        class: "transparent",
-        left: {
-            icon: 'mdi-account-convert-outline',
-            action: () => { $router.push({ path: '/student-startup' }); }
-        },
-        right: {
-            icon: 'mdi-dots-vertical',
-            action: () => {}
-        }
-    }
-};
+import { ref, onMounted } from 'vue'
+import CoursesList from '@/components/CourseList.vue'
+
+
 export default {
-  props: [
-    'pageTitle'
-  ],
-  setup() {
-    return {
-      PageConfig
-    }
-  },
+  components: {
+    CoursesList
+  }
 };
 </script>

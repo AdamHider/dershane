@@ -3,12 +3,10 @@ import axios from "axios";
 const courses = reactive({
     list: []
 });
+
 export function useCourses() {
-    async function fetchCourses () {
-        let request = null
-
-        request = axios.post('http://localhost:777/index.php?option=com_dershane&scope=category&method=getList&format=raw');
-
+    async function getList () {
+        const request = axios.post('http://localhost:777/index.php?option=com_dershane&scope=category&method=getList&format=raw');
         try{
             const response = await request
             courses.list = response.data.data.response_data
@@ -18,7 +16,7 @@ export function useCourses() {
     }
     
     return {
-        fetchCourses,
+        getList,
         courses
     }
 }

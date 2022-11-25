@@ -9,7 +9,9 @@
   "dependencies": {
     "@mdi/font": "7.0.96",
     "axios": "^1.2.0",
+    "pinia": "^2.0.26",
     "roboto-fontface": "*",
+    "swiper": "^8.4.5",
     "vue": "^3.2.38",
     "vue-router": "4",
     "vuetify": "^3.0.0",
@@ -18,7 +20,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.0.3",
     "@vue/cli-plugin-router": "~5.0.0",
-    "vite": "^3.1.9",
+    "vite": "^3.2.4",
     "vite-plugin-vuetify": "^1.0.0-alpha.12"
   }
 }
