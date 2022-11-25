@@ -10,9 +10,8 @@ export function useLessons() {
     const route = useRoute();
 
     async function getList (filter) {
-        const request = axios.post('http://localhost:777/index.php?option=com_dershane&scope=lessons&method=getList&format=raw', filter);
         try{
-            const response = await request
+            const response = await Api.lessons.getList(filter);
             lessons.list = response.data.data.response_data
         } catch(e){
             throw new Error(`Lessons are null: `+e); 

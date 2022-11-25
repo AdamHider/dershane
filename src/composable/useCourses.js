@@ -1,17 +1,17 @@
 import { reactive } from 'vue'
-import axios from "axios";
+import { Api } from '@/services/api'
 const courses = reactive({
     list: []
 });
 
 export function useCourses() {
     async function getList () {
-        const request = axios.post('http://localhost:777/index.php?option=com_dershane&scope=category&method=getList&format=raw');
+        console.log(Api);
         try{
-            const response = await request
+            const response = await Api.courses.getList();
             courses.list = response.data.data.response_data
         } catch(e){
-            throw new Error(`Courses are null: `+err); 
+            throw new Error(`Courses are null: `+e); 
         }      
     }
     

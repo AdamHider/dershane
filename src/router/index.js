@@ -31,6 +31,11 @@ export const  routes = [
     path: '/student-startup',
     component: () => import('@/pages/StudentStartup.vue'),
     beforeEnter: () => !isAuthorized()
+  },
+  {
+    path: '/user-sign-in',
+    component: () => import('@/pages/UserSignIn.vue'),
+    beforeEnter: () => !isAuthorized()
   }
 ];
 

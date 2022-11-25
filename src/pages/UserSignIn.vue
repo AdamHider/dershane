@@ -12,9 +12,6 @@
             Sign in
           </h1>
           <p class="text-xs-center">
-            <AppLink name="register">
-              Need an account?
-            </AppLink>
           </p>
 
           <ul class="error-messages">
@@ -26,39 +23,32 @@
             </li>
           </ul>
 
-          <form
+          <v-form
             ref="formRef"
-            @submit.prevent="login"
+            lazy-validation
           >
-            <fieldset
-              class="form-group"
-              aria-required="true"
-            >
-              <input
+            <v-text-field
                 v-model="form.email"
                 class="form-control form-control-lg"
                 type="email"
                 required
                 placeholder="Email"
-              >
-            </fieldset>
-            <fieldset class=" form-group">
-              <input
+              ></v-text-field>
+              <v-text-field
                 v-model="form.password"
                 class="form-control form-control-lg"
                 type="password"
                 required
                 placeholder="Password"
-              >
-            </fieldset>
-            <button
+              ></v-text-field>
+            <v-btn
               class="btn btn-lg btn-primary pull-xs-right"
               :disabled="!form.email || !form.password"
-              type="submit"
+              @click="login"
             >
               Sign in
-            </button>
-          </form>
+            </v-btn>
+          </v-form>
         </div>
       </div>
     </page-container>
@@ -66,12 +56,16 @@
 
 <script setup >
 import { routerPush } from '@/router/index'
-import { api } from 'src/services'
+import { Api } from '@/services/api'
 //import type { LoginUser } from 'src/services/api'
-import { useUserStore } from 'src/store/user'
+import { useUserStore } from '@/store/user'
 import { reactive, ref } from 'vue'
-const formRef = ref<HTMLFormElement | null>(null)
+const formRef = ref(null)
 const LoginUser = reactive({
+  email: '',
+  password: '',
+})
+const form = reactive({
   email: '',
   password: '',
 })
@@ -80,7 +74,7 @@ const errors = ref()
 const login = async () => {
   errors.value = {}
   if (!formRef.value?.checkValidity()) return
-    const result = await api.users.login({ user: form })
+    const result = await Api.users.login({ user: form })
   if (result.ok) {
     updateUser(result.data.user)
     await routerPush('global-feed');

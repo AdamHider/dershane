@@ -11,7 +11,12 @@
       <StudentSlider/>
       <v-sheet>
         <div v-if="!user">
-            You are not logged in
+            <p>
+            You are not logged in. You may just: 
+            </p>
+            <div class="d-flex justify-center align-baseline" style="gap: 1rem">
+                <v-btn rounded="lg" to="/user-sign-in">sign in</v-btn> or <v-btn rounded="lg" to="/user-sign-up">sign up</v-btn>
+            </div>
         </div>
         <div v-else>
             Welcome, dear user
