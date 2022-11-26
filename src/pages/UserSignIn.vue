@@ -3,76 +3,101 @@
       <template v-slot:prepend>
           <v-btn icon="mdi-arrow-left" v-on:click="$router.go(-1);"></v-btn>
       </template>
-      <v-app-bar-title>Student Startup</v-app-bar-title>
+      <v-app-bar-title>Sign In</v-app-bar-title>
   </v-app-bar>
   <page-container no-bottom-bar="true">
-      <div class="row">
-        <div class="col-md-6 offset-md-3 col-xs-12">
-          <h1 class="text-xs-center">
-            Sign in
-          </h1>
-          <p class="text-xs-center">
-          </p>
+    <v-form
+      ref="form"
+      v-model="formData.valid"
+      lazy-validation
+    >
+      <v-text-field
+        v-model="formData.email"
+        :rules="formData.emailRules"
+        label="E-mail"
+        required
+      ></v-text-field>
 
-          <ul class="error-messages">
-            <li
-              v-for="(error, field) in errors"
-              :key="field"
-            >
-              {{ field }} {{ error ? error[0] : '' }}
-            </li>
-          </ul>
+      <v-text-field
+        v-model="formData.password"
+        :counter="10"
+        :rules="formData.passwordRules"
+        label="Password"
+        required
+      ></v-text-field>
 
-          <v-form
-            ref="formRef"
-            lazy-validation
-          >
-            <v-text-field
-                v-model="form.email"
-                class="form-control form-control-lg"
-                type="email"
-                required
-                placeholder="Email"
-              ></v-text-field>
-              <v-text-field
-                v-model="form.password"
-                class="form-control form-control-lg"
-                type="password"
-                required
-                placeholder="Password"
-              ></v-text-field>
-            <v-btn
-              class="btn btn-lg btn-primary pull-xs-right"
-              :disabled="!form.email || !form.password"
-              @click="login"
-            >
-              Sign in
-            </v-btn>
-          </v-form>
-        </div>
-      </div>
+      <v-checkbox
+        v-model="formData.checkbox"
+        :rules="[v => !!v || 'You must agree to continue!']"
+        label="Do you agree?"
+        required
+      ></v-checkbox>
+
+      <v-btn
+        color="success"
+        class="mr-4"
+        @click="validate"
+      >
+        Validate
+      </v-btn>
+
+    </v-form>
     </page-container>
 </template>
 
 <script setup >
 import { routerPush } from '@/router/index'
 import { Api } from '@/services/api'
-//import type { LoginUser } from 'src/services/api'
 import { useUserStore } from '@/store/user'
+
 import { reactive, ref } from 'vue'
-const formRef = ref(null)
-const LoginUser = reactive({
+import { useVuelidate } from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
+
+const form = ref(null);
+
+const formData = reactive({
+  valid: true,
   email: '',
+  emailRules: [
+    v => !!v || 'E-mail is required',
+    v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+  ],
   password: '',
+  passwordRules: [
+    v => !!v || 'Name is required',
+    v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+  ],
+  select: null,
+  items: [
+    'Item 1',
+    'Item 2',
+    'Item 3',
+    'Item 4',
+  ],
+  checkbox: false,
 })
-const form = reactive({
-  email: '',
-  password: '',
-})
+
+const validate = async function () {
+  const { valid } = await form.value.validate()
+  if (valid) alert('Form is valid')
+}
+const reset =  function () {
+  form.value.reset()
+}
+const resetValidation = function() {
+  form.value.resetValidation()
+}
+
+
 const { updateUser } = useUserStore()
 const errors = ref()
 const login = async () => {
   errors.value = {}
+
+  console.log(form);
+
+
   if (!formRef.value?.checkValidity()) return
     const result = await Api.users.login({ user: form })
   if (result.ok) {
