@@ -1,52 +1,34 @@
-import axios from 'axios'
+import { useUserStore  } from '@/store/user'
+import jQuery from "jquery";
 
 const baseURL = 'http://localhost:777/';
 
 const ApiService = {
-  init () {
-    axios.defaults.baseURL = baseURL
-  },
-
-  setHeader () {
-    const token = getJWTFromStorage()
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Token ${token}`
-    } else {
-      delete axios.defaults.headers.common['Authorization']
-    }
-  },
   setResource (context, method) {
     return `${baseURL}index.php?option=com_dershane&scope=${context}&method=${method}&format=raw`;
   },
-  get (resource, slug = '') {
-    return axios
-      .get(`${resource}/${slug}`)
-      .catch((error) => {
-        throw new Error(`[RWV] ApiService ${error}`)
-      })
+  setBody (params){
+    const { user } = useUserStore();
+    return {
+      student: {
+        id: user && user.id
+      },
+      request_data: params
+    };
   },
-
-  post (context, method, params) {
+  async post (context, method, params) {
+    let responseData = {};
     const resource = this.setResource(context, method);
-    return axios.post(resource, params)
-  },
-
-  update (context, method, slug, params) {
-    const resource = this.setResource(context, method);
-    return axios.put(`${resource}/${slug}`, params)
-  },
-
-  put (resource, params) {
-    return axios
-      .put(`${resource}`, params)
-  },
-
-  delete (resource) {
-    return axios
-      .delete(resource)
-      .catch((error) => {
-        throw new Error(`[RWV] ApiService ${error}`)
+    const body = this.setBody(params);
+    await jQuery.post( resource, body)
+      .done(function(response, textStatus, request){
+        let parsed = JSON.parse(response);
+        responseData = parsed.data.response_data;
       })
+      .fail(function(){
+        responseData = false;
+      });
+      return responseData;
   }
 }
 
@@ -62,5 +44,19 @@ export const Api = {
         getList (params) {
             return ApiService.post('lessons', 'getList', params)
         }
-    }
+    },
+    user: {
+        signUp (params) {
+          console.log(params);
+            return ApiService.post('user', 'signUp', params)
+        },
+        checkIfUsernameExists (params) {
+          console.log(params);
+            return ApiService.post('user', 'checkIfUsernameExists', params)
+        },
+        signIn (params) {
+          console.log(params);
+            return ApiService.post('user', 'signIn', params)
+        }
+    },
 }

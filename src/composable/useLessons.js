@@ -1,5 +1,4 @@
 import { reactive, watch } from 'vue'
-import axios from "axios";
 import { useRoute } from 'vue-router'
 const lessons = reactive({
     list: []
@@ -12,7 +11,7 @@ export function useLessons() {
     async function getList (filter) {
         try{
             const response = await Api.lessons.getList(filter);
-            lessons.list = response.data.data.response_data
+            lessons.list = response.data.response_data
         } catch(e){
             throw new Error(`Lessons are null: `+e); 
         }      

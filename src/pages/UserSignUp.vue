@@ -9,48 +9,52 @@
     <v-form
       ref="form"
       v-model="formData.valid"
+      @submit.prevent="validate()"
     >
       <v-sheet v-if="formData.step == 1">
         <v-text-field
-          v-model="formData.name"
+          v-model="formData.fields.name.value"
           :counter="10"
-          :rules="formData.nameRules"
+          :rules="formData.fields.name.rules"
+          :error-messages="formData.fields.name.errors"
           label="Name"
           required
         ></v-text-field>
       </v-sheet>
       <v-sheet v-else-if="formData.step == 2">
         <v-text-field
-          v-model="formData.email"
-          :rules="formData.emailRules"
+          v-model="formData.fields.email.value"
+          :rules="formData.fields.email.rules"
+          :error-messages="formData.fields.email.errors"
           label="E-mail"
           required
         ></v-text-field>
       </v-sheet>
       <v-sheet v-else-if="formData.step == 3">
           <v-text-field
-            v-model="formData.password"
-            :append-icon="formData.passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="formData.passwordRules"
-            :type="formData.passwordShow ? 'text' : 'password'"
+            v-model="formData.fields.password.value"
+            :append-icon="formData.fields.password.reveal ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="formData.fields.password.rules"
+            :error-messages="formData.fields.password.errors"
+            :type="formData.fields.password.reveal ? 'text' : 'password'"
             name="input-10-1"
             label="Password"
             hint="At least 8 characters"
             counter
-            @click:append="formData.passwordShow = !formData.passwordShow"
+            @click:append="formData.fields.password.reveal = !formData.fields.password.reveal"
           ></v-text-field>
       </v-sheet>
       <v-sheet v-else-if="formData.step == 4">
           <v-text-field
-            v-model="formData.passwordConfirm"
-            :append-icon="formData.passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="formData.passwordConfirmRules"
-            :type="formData.passwordShow ? 'text' : 'password'"
+            v-model="formData.fields.passwordConfirm.value"
+            :append-icon="formData.fields.password.reveal ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="formData.fields.passwordConfirm.rules"
+            :type="formData.fields.password.reveal ? 'text' : 'password'"
             name="input-10-1"
             label="Confirm password"
             hint="At least 8 characters"
             counter
-            @click:append="formData.passwordShow = !formData.passwordShow"
+            @click:append="formData.fields.password.reveal = !formData.fields.password.reveal"
           ></v-text-field>
       </v-sheet>
 
@@ -68,10 +72,10 @@
         color="success"
         class="mr-4"
         @click="validate()"
+        v-on:keyup.enter="validate()"
       >
         Next
       </v-btn>
-
     </v-form>
     </page-container>
 </template>
@@ -80,61 +84,82 @@
 import { routerPush } from '@/router/index'
 import { Api } from '@/services/api'
 import { useUserStore } from '@/store/user'
-
-import { reactive, ref, computed } from 'vue'
-import { useVuelidate } from '@vuelidate/core'
-import { required, email } from '@vuelidate/validators'
+import { reactive, ref } from 'vue'
 
 const form = ref(null);
 
 const formData = reactive({
   step: 1,
   valid: true,
-  name: '',
-  nameRules: [
-    v => !!v || 'Name is required',
-    v => (v && v.length <= 10) || 'Name must be less than 10 characters',
-  ],
-  email: '',
-  emailRules: [
-    v => !!v || 'E-mail is required',
-    v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-  ],
-  password: '',
-  passwordRules: [
-    v => !!v || 'Required.',
-    v => (v && v.length <= 8) || 'Min 8 characters',
-  ],
-  passwordShow: false,
-  passwordConfirm: '',
-  passwordConfirmRules: [
-    v => !!v || 'Required.',
-    v => (v === formData.password) || 'Your passwords are different',
-  ],
-  checkbox: false,
+  fields: {
+    name: {
+      value: 'admin7',
+      rules: [
+        v => !!v || 'Name is required',
+        v => (v && v.length <= 10) || 'Name must be less than 10 characters'
+      ],
+      errors: '',
+    },
+    email: {
+      value: 'as@as.com',
+      rules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      ],
+      errors: '',
+    },
+    password: {
+      value: '12345678',
+      rules: [
+        v => !!v || 'Required.',
+        v => (v && v.length <= 8) || 'Min 8 characters',
+      ],
+      errors: '',
+      reveal: false,
+    },
+    passwordConfirm: {
+      value: '12345678',
+      rules: [
+        v => !!v || 'Required.',
+        v => (v === formData.fields.password.value) || 'Your passwords are different',
+      ],
+    }
+  }
 })
+
+const steps = [
+  '', 'name', 'email', 'password'
+];
 
 const validate = async function () {
   const { valid } = await form.value.validate()
   if (valid) formData.step++
+  if (formData.step > 4){
+    signUp();
+  }
 }
 
-
 const { updateUser } = useUserStore()
-const errors = ref()
-const login = async () => {
-  errors.value = {}
 
-  console.log(form);
+const signUp = async () => {
+  const user = {
+    name: formData.fields.name.value,
+    email: formData.fields.email.value,
+    password: formData.fields.password.value
+  };
+  if (!await form.value.validate()) return
 
-
-  if (!formRef.value?.checkValidity()) return
-    const result = await Api.users.login({ user: form })
-  if (result.ok) {
-    updateUser(result.data.user)
-    await routerPush('global-feed');
+  const result = await Api.user.signUp(user)
+  
+  if (result.success) {
+    updateUser(user)
+    await routerPush('user-startup');
   } else {
-    errors.value = await result.error
+    for(var i in result.error_field){
+      var field = result.error_field[i];
+      formData.fields[field].errors = result.message[field];
+    }
+    formData.step = steps.indexOf(result.error_field[0]);
   }
 }
 </script>

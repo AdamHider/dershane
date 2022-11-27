@@ -11,7 +11,7 @@ export const isAuthorized = () => !!userStorage.get()
 export const useUserStore = defineStore('user', () => {
   const user = ref(userStorage.get())
   const isAuthorized = computed(() => user.value !== null)
-  console.log(isAuthorized);
+  
 
   function updateUser (userData) {
     if (userData === undefined || userData === null) {

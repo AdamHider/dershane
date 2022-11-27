@@ -6,10 +6,8 @@ const courses = reactive({
 
 export function useCourses() {
     async function getList () {
-        console.log(Api);
         try{
-            const response = await Api.courses.getList();
-            courses.list = response.data.data.response_data
+            courses.list = await Api.courses.getList();
         } catch(e){
             throw new Error(`Courses are null: `+e); 
         }      

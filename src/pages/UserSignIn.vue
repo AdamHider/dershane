@@ -40,7 +40,7 @@
       >
         Validate
       </v-btn>
-
+      <div>{{errors}}</div>
     </v-form>
     </page-container>
 </template>
@@ -49,62 +49,52 @@
 import { routerPush } from '@/router/index'
 import { Api } from '@/services/api'
 import { useUserStore } from '@/store/user'
-
 import { reactive, ref } from 'vue'
-import { useVuelidate } from '@vuelidate/core'
-import { required, email } from '@vuelidate/validators'
 
 const form = ref(null);
 
 const formData = reactive({
   valid: true,
-  email: '',
+  email: 'as@asd.cpo',
   emailRules: [
     v => !!v || 'E-mail is required',
     v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
   ],
-  password: '',
+  password: '123123',
   passwordRules: [
     v => !!v || 'Name is required',
-    v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+    v => (v && v.length <= 8) || 'Name must be less than 10 characters',
   ],
   select: null,
-  items: [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-  ],
-  checkbox: false,
+  checkbox: true,
 })
 
 const validate = async function () {
   const { valid } = await form.value.validate()
-  if (valid) alert('Form is valid')
+  if (valid) signIn();
 }
-const reset =  function () {
-  form.value.reset()
-}
-const resetValidation = function() {
-  form.value.resetValidation()
-}
+
+
 
 
 const { updateUser } = useUserStore()
 const errors = ref()
-const login = async () => {
+const signIn = async () => {
   errors.value = {}
+  const user = {
+    email: formData.email,
+    password: formData.password
+  };
+  if (!await form.value.validate()) return
 
-  console.log(form);
-
-
-  if (!formRef.value?.checkValidity()) return
-    const result = await Api.users.login({ user: form })
-  if (result.ok) {
-    updateUser(result.data.user)
-    await routerPush('global-feed');
+  const result = await Api.user.signIn(user)
+  
+  console.log(result);
+  if (result.success) {
+    updateUser(user)
+    await routerPush('/user-startup');
   } else {
-    errors.value = await result.error
+    errors.value = await result.message
   }
 }
 </script>

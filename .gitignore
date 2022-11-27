@@ -27,3 +27,7 @@ yarn.lock
 package.json
 package-lock.json
 yarn.lock
+package-lock.json
+.gitignore
+package.json
+yarn.lock

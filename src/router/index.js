@@ -29,16 +29,17 @@ export const  routes = [
   },
   {
     path: '/student-startup',
+    name: 'student-startup',
     component: () => import('@/pages/StudentStartup.vue'),
-    beforeEnter: () => !isAuthorized()
   },
   {
     path: '/user-sign-in',
+    name: 'user-sign-in',
     component: () => import('@/pages/UserSignIn.vue'),
-    beforeEnter: () => !isAuthorized()
   },
   {
     path: '/user-sign-up',
+    name: 'user-sign-up',
     component: () => import('@/pages/UserSignUp.vue'),
     beforeEnter: () => !isAuthorized()
   }
