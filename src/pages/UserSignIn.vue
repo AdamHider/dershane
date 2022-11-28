@@ -60,14 +60,14 @@ const formData = reactive({
   valid: true,
   fields: {
     email: {
-      value: 'ajd1er.adjivapov@gmail.com',
+      value: 'as2@as.com',
       rules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
     }, 
     password: {
-      value: '12345678',
+      value: '123456',
       rules: [
         v => !!v || 'Name is required',
         v => (v && v.length <= 8) || 'Name must be less than 10 characters',
@@ -87,22 +87,22 @@ const validate = async function () {
 
 
 
-const { user, updateUser } = useUserStore()
+const { updateUser } = useUserStore()
 const errors = ref()
 const signIn = async () => {
   errors.value = {}
-  user.authorization = {
+  const userAuth = {
     email: formData.fields.email.value,
     password: formData.fields.password.value,
     terms: formData.fields.terms.value
   };
   if (!await form.value.validate()) return
 
-  const result = await api.user.signIn(user.authorization)
+  const result = await api.user.signIn(userAuth)
   
   if (result.success) {
-    user.data = await api.user.get({id: result.id})
-    updateUser(user)
+    const userData = await api.user.get({id: result.id})
+    updateUser({authorization: userAuth, data: userData})
     routerPush('/student-startup')
   } else {
     setErrors(result)

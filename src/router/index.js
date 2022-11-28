@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { isAuthorized } from '@/store/user'
 //import routes from '~pages'
 
 export const  routes = [
@@ -41,13 +40,11 @@ export const  routes = [
     path: '/user-sign-up',
     name: 'user-sign-up',
     component: () => import('@/pages/UserSignUp.vue'),
-    beforeEnter: () => !isAuthorized()
   },
   {
     path: '/user-activate-:activation_code',
     name: 'user-activate',
     component: () => import('@/pages/UserActivate.vue'),
-    beforeEnter: () => !isAuthorized()
   }
 ];
 
