@@ -42,6 +42,12 @@ export const  routes = [
     name: 'user-sign-up',
     component: () => import('@/pages/UserSignUp.vue'),
     beforeEnter: () => !isAuthorized()
+  },
+  {
+    path: '/user-activate-:activation_code',
+    name: 'user-activate',
+    component: () => import('@/pages/UserActivate.vue'),
+    beforeEnter: () => !isAuthorized()
   }
 ];
 
@@ -53,13 +59,13 @@ export const router = createRouter({
   },
 })
 
-export function routerPush (name, params){
+export function routerPush (path, params){
   if (params !== undefined) {
     return router.push({
-      name,
-      params,
+      path: path,
+      params: params,
     })
   } else {
-    return router.push({ name })
+    return router.push({ path: path })
   }
 }

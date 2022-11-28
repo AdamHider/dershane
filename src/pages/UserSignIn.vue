@@ -9,25 +9,28 @@
     <v-form
       ref="form"
       v-model="formData.valid"
+      @submit.prevent="validate()"
       lazy-validation
     >
       <v-text-field
-        v-model="formData.email"
-        :rules="formData.emailRules"
+        v-model="formData.fields.email.value"
+        :rules="formData.fields.email.rules"
+        :error-messages="formData.fields.email.errors"
         label="E-mail"
         required
       ></v-text-field>
 
       <v-text-field
-        v-model="formData.password"
+        v-model="formData.fields.password.value"
         :counter="10"
-        :rules="formData.passwordRules"
+        :rules="formData.fields.password.rules"
+        :error-messages="formData.fields.password.errors"
         label="Password"
         required
       ></v-text-field>
 
       <v-checkbox
-        v-model="formData.checkbox"
+        v-model="formData.fields.terms.value"
         :rules="[v => !!v || 'You must agree to continue!']"
         label="Do you agree?"
         required
@@ -36,18 +39,18 @@
       <v-btn
         color="success"
         class="mr-4"
-        @click="validate"
+        @click="validate()"
+        v-on:keyup.enter="validate()"
       >
         Validate
       </v-btn>
-      <div>{{errors}}</div>
     </v-form>
     </page-container>
 </template>
 
 <script setup >
 import { routerPush } from '@/router/index'
-import { Api } from '@/services/api'
+import { api } from '@/services/'
 import { useUserStore } from '@/store/user'
 import { reactive, ref } from 'vue'
 
@@ -55,18 +58,25 @@ const form = ref(null);
 
 const formData = reactive({
   valid: true,
-  email: 'as@asd.cpo',
-  emailRules: [
-    v => !!v || 'E-mail is required',
-    v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-  ],
-  password: '123123',
-  passwordRules: [
-    v => !!v || 'Name is required',
-    v => (v && v.length <= 8) || 'Name must be less than 10 characters',
-  ],
-  select: null,
-  checkbox: true,
+  fields: {
+    email: {
+      value: 'ajd1er.adjivapov@gmail.com',
+      rules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      ],
+    }, 
+    password: {
+      value: '12345678',
+      rules: [
+        v => !!v || 'Name is required',
+        v => (v && v.length <= 8) || 'Name must be less than 10 characters',
+      ],
+    },
+    terms: {
+      value: true
+    }
+  }
 })
 
 const validate = async function () {
@@ -77,24 +87,31 @@ const validate = async function () {
 
 
 
-const { updateUser } = useUserStore()
+const { user, updateUser } = useUserStore()
 const errors = ref()
 const signIn = async () => {
   errors.value = {}
-  const user = {
-    email: formData.email,
-    password: formData.password
+  user.authorization = {
+    email: formData.fields.email.value,
+    password: formData.fields.password.value,
+    terms: formData.fields.terms.value
   };
   if (!await form.value.validate()) return
 
-  const result = await Api.user.signIn(user)
+  const result = await api.user.signIn(user.authorization)
   
-  console.log(result);
   if (result.success) {
+    user.data = await api.user.get({id: result.id})
     updateUser(user)
-    await routerPush('/user-startup');
+    routerPush('/student-startup')
   } else {
-    errors.value = await result.message
+    setErrors(result)
   }
+}
+const setErrors = (response) => {
+  for(var i in response.error_field){
+      var field = response.error_field[i];
+      formData.fields[field].errors = response.message[field];
+    }
 }
 </script>

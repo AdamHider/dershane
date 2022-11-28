@@ -10,16 +10,20 @@
       <h1 class="text-h2 font-weight-bold">Student Startup</h1>
       <StudentSlider/>
       <v-sheet>
-        <div v-if="!user">
+        <div v-if="isAuthorized">
+            Welcome, dear user {{user.name}}
+            <div class="d-flex justify-center align-baseline" style="gap: 1rem">
+                <v-btn rounded="lg" @click="signOut()">sign out</v-btn>
+            </div>
+        </div>
+        <div v-else>
             <p>
             You are not logged in. You may just: 
             </p>
             <div class="d-flex justify-center align-baseline" style="gap: 1rem">
-                <v-btn rounded="lg" to="/user-sign-in">sign in</v-btn> or <v-btn rounded="lg" to="/user-sign-up">sign up</v-btn>
+                <v-btn rounded="lg" to="/user-sign-in">sign in</v-btn> or <v-btn rounded="lg" to="/user-sign-up">sign up</v-btn> <v-btn rounded="lg" @click="signOut()">sign out</v-btn>
             </div>
-        </div>
-        <div v-else>
-            Welcome, dear user
+           
         </div>
       </v-sheet>
     </page-container>
@@ -27,9 +31,17 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { isAuthorized, useUserStore  } from '@/store/user'
+import { useUserStore, isAuthorized  } from '@/store/user'
+import { api  } from '@/services/'
 import StudentSlider from '@/components/StudentSlider.vue'
 
-const { user } = storeToRefs(useUserStore());
+
+const { user } = useUserStore();
+
+const signOut = async () => {
+    await api.user.signOut();
+    const { updateUser } = useUserStore();
+    updateUser();
+}
 
 </script>

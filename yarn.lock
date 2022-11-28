@@ -3284,10 +3284,10 @@
   "resolved" "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz"
   "version" "2.3.1"
 
-"pinia@^2.0.26":
-  "integrity" "sha512-tSxZNUcMGxQOvKZRjPKXxd2+/2NZhRF/CoYVE/+K6uE/Z3v1Oi4fcQFpxu5nMB1dCchjXUZ+lz0tBxV5ntwmQQ=="
-  "resolved" "https://registry.npmjs.org/pinia/-/pinia-2.0.26.tgz"
-  "version" "2.0.26"
+"pinia@^2.0.27":
+  "integrity" "sha512-nOnXP0OFeL8R4WjAHsterU+11vptda643gH02xKNtSCDPiRzVfRYodOLihLDoa0gL1KKuQKV+KOzEgdt3YvqEw=="
+  "resolved" "https://registry.npmjs.org/pinia/-/pinia-2.0.27.tgz"
+  "version" "2.0.27"
   dependencies:
     "@vue/devtools-api" "^6.4.5"
     "vue-demi" "*"

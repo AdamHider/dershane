@@ -82,7 +82,7 @@
 
 <script setup >
 import { routerPush } from '@/router/index'
-import { Api } from '@/services/api'
+import { api } from '@/services/'
 import { useUserStore } from '@/store/user'
 import { reactive, ref } from 'vue'
 
@@ -139,27 +139,29 @@ const validate = async function () {
   }
 }
 
-const { updateUser } = useUserStore()
+const { user, updateUser } = useUserStore()
 
 const signUp = async () => {
-  const user = {
+  if (!await form.value.validate()) return
+  user.authorizaion.value = {
     name: formData.fields.name.value,
     email: formData.fields.email.value,
     password: formData.fields.password.value
   };
-  if (!await form.value.validate()) return
-
-  const result = await Api.user.signUp(user)
+  const result = await api.user.signUp(user.authorizaion)
   
   if (result.success) {
-    updateUser(user)
-    await routerPush('user-startup');
+    await updateUser(user);
+    routerPush('/student-startup')
   } else {
-    for(var i in result.error_field){
-      var field = result.error_field[i];
-      formData.fields[field].errors = result.message[field];
-    }
-    formData.step = steps.indexOf(result.error_field[0]);
+    setErrors(result)
+    formData.step = steps.indexOf(response.error_field[0]);
   }
+}
+const setErrors = (response) => {
+  for(var i in response.error_field){
+      var field = response.error_field[i];
+      formData.fields[field].errors = response.message[field];
+    }
 }
 </script>
