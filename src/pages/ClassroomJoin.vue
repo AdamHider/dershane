@@ -13,46 +13,22 @@
     >
       <v-sheet v-if="formData.step == 1">
         <v-text-field
-          v-model="formData.name"
-          :counter="10"
-          :rules="formData.nameRules"
-          label="Name"
+          v-model="formData.fields.classroom_code.value"
+          :rules="formData.fields.classroom_code.rules"
+          :error-messages="formData.fields.classroom_code.errors"
+          label="Classroom code"
           required
         ></v-text-field>
       </v-sheet>
       <v-sheet v-else-if="formData.step == 2">
         <v-text-field
-          v-model="formData.email"
-          :rules="formData.emailRules"
-          label="E-mail"
+          v-model="formData.fields.name.value"
+          :counter="10"
+          :rules="formData.fields.name.rules"
+          :error-messages="formData.fields.name.errors"
+          label="Name"
           required
         ></v-text-field>
-      </v-sheet>
-      <v-sheet v-else-if="formData.step == 3">
-          <v-text-field
-            v-model="formData.password"
-            :append-icon="formData.passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="formData.passwordRules"
-            :type="formData.passwordShow ? 'text' : 'password'"
-            name="input-10-1"
-            label="Password"
-            hint="At least 8 characters"
-            counter
-            @click:append="formData.passwordShow = !formData.passwordShow"
-          ></v-text-field>
-      </v-sheet>
-      <v-sheet v-else-if="formData.step == 4">
-          <v-text-field
-            v-model="formData.passwordConfirm"
-            :append-icon="formData.passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="formData.passwordConfirmRules"
-            :type="formData.passwordShow ? 'text' : 'password'"
-            name="input-10-1"
-            label="Confirm password"
-            hint="At least 8 characters"
-            counter
-            @click:append="formData.passwordShow = !formData.passwordShow"
-          ></v-text-field>
       </v-sheet>
 
 
@@ -71,18 +47,17 @@
         @click="validate()"
         v-on:keyup.enter="validate()"
       >
-        Next
+        <label v-if="formData.step == 4">Sign Up</label>
+        <label v-else>Next</label>
       </v-btn>
-
     </v-form>
     </page-container>
 </template>
 
 <script setup >
 import { routerPush } from '@/router/index'
-import { Api } from '@/services/api'
-import { useUserStore } from '@/store/user'
-
+import { api } from '@/services/'
+import { useStudentStore } from '@/store/student'
 import { reactive, ref } from 'vue'
 
 const form = ref(null);
@@ -90,65 +65,58 @@ const form = ref(null);
 const formData = reactive({
   step: 1,
   valid: true,
-  name: '',
-  nameRules: [
-    v => !!v || 'Name is required',
-    v => (v && v.length <= 10) || 'Name must be less than 10 characters',
-  ],
-  email: '',
-  emailRules: [
-    v => !!v || 'E-mail is required',
-    v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-  ],
-  password: '',
-  passwordRules: [
-    v => !!v || 'Required.',
-    v => (v && v.length <= 8) || 'Min 8 characters',
-  ],
-  passwordShow: false,
-  passwordConfirm: '',
-  passwordConfirmRules: [
-    v => !!v || 'Required.',
-    v => (v === formData.password) || 'Your passwords are different',
-  ],
-  checkbox: false,
+  fields: {
+    classroom_code: {
+      value: 'd1d1d1',
+      rules: [
+        v => !!v || 'Classroom code is required',
+        v => (v && v.length > 5) || 'Classroom code must be valid',
+      ],
+      errors: '',
+    },
+    name: {
+      value: 'admin7',
+      rules: [
+        v => !!v || 'Name is required',
+        v => (v && v.length <= 10) || 'Name must be less than 10 characters'
+      ],
+      errors: '',
+    }
+  }
 })
 
 const steps = [
-  '', 'name', 'email', 'password'
+  '', 'classroom_code', 'name'
 ];
+
+const { signUp } = useStudentStore()
 
 const validate = async function () {
   const { valid } = await form.value.validate()
   if (valid) formData.step++
-  if (formData.step > 4){
-    signUp();
+  if (formData.step == steps.length){
+    const result = await signUp({
+      classroom_code: formData.fields.classroom_code.value,
+      name: formData.fields.name.value
+    });
+    if (result) {
+      routerPush('/student-startup')
+    } else {
+      /*
+      setErrors(result)
+      formData.step = steps.indexOf(result.error_field[0]);
+      */
+    }
   }
 }
 
 
-const { updateUser } = useUserStore()
-const errors = ref()
-const signUp = async () => {
-  errors.value = {}
-  const user = {
-    name: formData.name,
-    email: formData.email,
-    password: formData.password
-  };
-  console.log(user);
-  if (!await form.value.validate()) return
 
-  const result = await Api.user.signUp(user)
-  
-  if (result.success) {
-    updateUser(user)
-    await routerPush('/user-startup');
-  } else {
-    for(var error_field in result.error_field){
-
+    
+const setErrors = (response) => {
+  for(var i in response.error_field){
+      var field = response.error_field[i];
+      formData.fields[field].errors = response.message[field];
     }
-    errors.value = await result.error
-  }
 }
 </script>

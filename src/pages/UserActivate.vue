@@ -1,7 +1,6 @@
 <template>
   <page-container no-bottom-bar="true">
-    
-    </page-container>
+  </page-container>
 </template>
 
 <script setup >
@@ -9,32 +8,26 @@ import { routerPush } from '@/router/index'
 import { api } from '@/services/'
 import { useUserStore } from '@/store/user'
 import { reactive, ref } from 'vue'
+import {useRoute} from "vue-router";
 
-const { updateUser } = useUserStore()
+const { activate } = useUserStore()
 const errors = ref()
 
-App.User.signOut(function(result){
-            App.Pages.UserActivate.activate(function(result){
-                App.User.load(function(result){
-                    App.Router.redirect('user_sign_in');
-                    return callback(true);                
-                });
-            });
-        });
-const checkActivation = async () => {
-  await api.user.signOut();
-  const activated = await api.user.activate();
-  if(activated){
-    
-  }
-  const result = await api.user.signIn(user)
-  
-  if (result.success) {
-    updateUser(user)
-    routerPush('/student-startup')
-  } else {
-    setErrors(result)
-  }
+const route = useRoute();
+const activation_code = route.params.activation_code;
+
+if( activation_code && activation_code.length > 30 ){
+  (async () => {
+    const activated = await activate({activation: activation_code});
+    if (activated) {
+      routerPush('/student-startup')
+    } else {
+      console.log(activated)
+    }
+  })()
+} else {
+  routerPush('/student-startup')
 }
+
 
 </script>

@@ -74,7 +74,8 @@
         @click="validate()"
         v-on:keyup.enter="validate()"
       >
-        Next
+        <label v-if="formData.step == 4">Sign Up</label>
+        <label v-else>Next</label>
       </v-btn>
     </v-form>
     </page-container>
@@ -131,33 +132,29 @@ const steps = [
   '', 'name', 'email', 'password'
 ];
 
+const { signUp } = useUserStore()
+
 const validate = async function () {
   const { valid } = await form.value.validate()
   if (valid) formData.step++
   if (formData.step > 4){
-    signUp();
+    const result = await signUp({
+      name: formData.fields.name.value,
+      email: formData.fields.email.value,
+      password: formData.fields.password.value
+    });
+    if (result.success) {
+      routerPush('/student-startup')
+    } else {
+      setErrors(result)
+      formData.step = steps.indexOf(result.error_field[0]);
+    }
   }
 }
 
-const { user, updateUser } = useUserStore()
 
-const signUp = async () => {
-  if (!await form.value.validate()) return
-  user.authorizaion.value = {
-    name: formData.fields.name.value,
-    email: formData.fields.email.value,
-    password: formData.fields.password.value
-  };
-  const result = await api.user.signUp(user.authorizaion)
-  
-  if (result.success) {
-    await updateUser(user);
-    routerPush('/student-startup')
-  } else {
-    setErrors(result)
-    formData.step = steps.indexOf(response.error_field[0]);
-  }
-}
+
+    
 const setErrors = (response) => {
   for(var i in response.error_field){
       var field = response.error_field[i];

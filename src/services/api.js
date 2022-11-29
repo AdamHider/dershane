@@ -1,4 +1,3 @@
-import { useUserStore  } from '@/store/user'
 import jQuery from "jquery";
 
 export class ApiService {
@@ -11,11 +10,7 @@ export class ApiService {
     return this.baseUrl+`index.php?option=com_dershane&scope=${context}&method=${method}&format=raw`;
   }
   setBody = (params) => {
-    const { user } = useUserStore();
     return {
-      student: {
-        id: user && user.id
-      },
       request_data: params
     };
   }
@@ -70,6 +65,23 @@ export class Api extends ApiService{
         },
         activate: (params) => {
             return this.post('user', 'activate', params)
+        }
+    }
+    student = {
+        get: (params) =>  {
+            return this.post('student', 'getItem', params)
+        },
+        signUp: (params) =>  {
+            return this.post('student', 'addItem', params)
+        },
+        signOut: (params) =>  {
+            return this.post('student', 'unauthorizeItem', params);
+        },
+        signIn: (params) => {
+            return this.post('student', 'authorizeItem', params);
+        },
+        activate: (params) => {
+            return this.post('student', 'activate', params)
         }
     }
 }

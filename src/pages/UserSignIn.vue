@@ -50,7 +50,6 @@
 
 <script setup >
 import { routerPush } from '@/router/index'
-import { api } from '@/services/'
 import { useUserStore } from '@/store/user'
 import { reactive, ref } from 'vue'
 
@@ -60,14 +59,14 @@ const formData = reactive({
   valid: true,
   fields: {
     email: {
-      value: 'as2@as.com',
+      value: 'ajd1er.adjivapov@gmail.com',
       rules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
     }, 
     password: {
-      value: '123456',
+      value: '12345678',
       rules: [
         v => !!v || 'Name is required',
         v => (v && v.length <= 8) || 'Name must be less than 10 characters',
@@ -79,35 +78,24 @@ const formData = reactive({
   }
 })
 
+const { signIn } = useUserStore()
+
 const validate = async function () {
   const { valid } = await form.value.validate()
-  if (valid) signIn();
-}
-
-
-
-
-const { updateUser } = useUserStore()
-const errors = ref()
-const signIn = async () => {
-  errors.value = {}
-  const userAuth = {
-    email: formData.fields.email.value,
-    password: formData.fields.password.value,
-    terms: formData.fields.terms.value
-  };
-  if (!await form.value.validate()) return
-
-  const result = await api.user.signIn(userAuth)
-  
-  if (result.success) {
-    const userData = await api.user.get({id: result.id})
-    updateUser({authorization: userAuth, data: userData})
-    routerPush('/student-startup')
-  } else {
-    setErrors(result)
+  if (valid) {
+    const result = await signIn({
+      email: formData.fields.email.value,
+      password: formData.fields.password.value,
+      terms: formData.fields.terms.value
+    });
+    if (result.success) {
+      routerPush('/student-startup')
+    } else {
+      setErrors(result)
+    }
   }
 }
+
 const setErrors = (response) => {
   for(var i in response.error_field){
       var field = response.error_field[i];

@@ -9,6 +9,7 @@ export function useCourses() {
         try{
             courses.list = await api.courses.getList();
         } catch(e){
+            console.log(e)
             throw new Error(`Courses are null: `+e); 
         }      
     }

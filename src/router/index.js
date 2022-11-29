@@ -19,6 +19,10 @@ export const  routes = [
     component: () => import('@/pages/Classroom.vue')
   },
   {
+    path: '/classroom-join',
+    component: () => import('@/pages/ClassroomJoin.vue')
+  },
+  {
     path: '/notifications',
     component: () => import('@/pages/Notifications.vue')
   },
@@ -28,22 +32,18 @@ export const  routes = [
   },
   {
     path: '/student-startup',
-    name: 'student-startup',
     component: () => import('@/pages/StudentStartup.vue'),
   },
   {
     path: '/user-sign-in',
-    name: 'user-sign-in',
     component: () => import('@/pages/UserSignIn.vue'),
   },
   {
     path: '/user-sign-up',
-    name: 'user-sign-up',
     component: () => import('@/pages/UserSignUp.vue'),
   },
   {
     path: '/user-activate-:activation_code',
-    name: 'user-activate',
     component: () => import('@/pages/UserActivate.vue'),
   }
 ];
