@@ -5,10 +5,9 @@
 
 <script setup >
 import { routerPush } from '@/router/index'
-import { api } from '@/services/'
 import { useUserStore } from '@/store/user'
 import { reactive, ref } from 'vue'
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 
 const { activate } = useUserStore()
 const errors = ref()

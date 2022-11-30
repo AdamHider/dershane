@@ -47,10 +47,10 @@ export const useStudentStore = defineStore('drsh_student_store', () => {
       update(null);
       return true;
     }
-    async function signUp (auth) {
-      const result = await api.student.signUp(auth)
+    async function signUp (auth, action) {
+      const result = await api.student.signUp({...auth, ...{action: action}})
       if (result.success) {
-        update({authorization: auth, data: result.student})
+        update({authorization: auth, data: result.data})
       }
       return result;
     }

@@ -56,9 +56,9 @@
 
 <script setup >
 import { routerPush } from '@/router/index'
-import { api } from '@/services/'
 import { useStudentStore } from '@/store/student'
 import { reactive, ref } from 'vue'
+import { useRoute } from "vue-router";
 
 const form = ref(null);
 
@@ -89,7 +89,10 @@ const steps = [
   '', 'classroom_code', 'name'
 ];
 
+const route = useRoute();
 const { signUp } = useStudentStore()
+const action = route.params.action;
+
 
 const validate = async function () {
   const { valid } = await form.value.validate()
@@ -98,14 +101,12 @@ const validate = async function () {
     const result = await signUp({
       classroom_code: formData.fields.classroom_code.value,
       name: formData.fields.name.value
-    });
-    if (result) {
+    }, action);
+    if (result.success) {
       routerPush('/student-startup')
     } else {
-      /*
       setErrors(result)
       formData.step = steps.indexOf(result.error_field[0]);
-      */
     }
   }
 }

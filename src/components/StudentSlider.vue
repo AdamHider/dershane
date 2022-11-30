@@ -17,7 +17,8 @@
             </swiper-slide>
     ...
   </swiper>
-  <v-btn  to="/classroom-join">Join Classroom</v-btn>
+  <v-btn  to="/student-sign-up-new">Add student</v-btn>
+  <v-btn  to="/student-sign-up-existing">Signin student</v-btn>
 </template>
 <script>
   // import Swiper core and required modules

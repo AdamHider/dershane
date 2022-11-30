@@ -19,8 +19,8 @@ export const  routes = [
     component: () => import('@/pages/Classroom.vue')
   },
   {
-    path: '/classroom-join',
-    component: () => import('@/pages/ClassroomJoin.vue')
+    path: '/student-sign-up-:action',
+    component: () => import('@/pages/StudentSignUp.vue')
   },
   {
     path: '/notifications',
