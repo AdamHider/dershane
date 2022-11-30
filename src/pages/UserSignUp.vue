@@ -84,7 +84,7 @@
 <script setup >
 import { routerPush } from '@/router/index'
 import { useUserStore } from '@/store/user'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 
 const form = ref(null);
 
@@ -131,7 +131,7 @@ const steps = [
   '', 'name', 'email', 'password'
 ];
 
-const { signUp } = useUserStore()
+const { signUp, checkUsername } = useUserStore()
 
 const validate = async function () {
   const { valid } = await form.value.validate()
@@ -150,9 +150,13 @@ const validate = async function () {
     }
   }
 }
-
-
-
+watch(formData.fields.name, async (currentValue, oldValue) => {
+    const result = await checkUsername({username: currentValue.value});
+    formData.fields.name.errors = '';
+    if(!result.success){
+      formData.fields.name.errors = result.message;
+    } 
+});
     
 const setErrors = (response) => {
   for(var i in response.error_field){

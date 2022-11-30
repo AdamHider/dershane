@@ -28,8 +28,7 @@ export class ApiService {
       }
     })
       .done(function(response, textStatus, request){
-        let parsed = JSON.parse(response);
-        responseData = parsed.data;
+        responseData = JSON.parse(response);
       })
       .fail(function(){
         responseData = false;
@@ -65,6 +64,9 @@ export class Api extends ApiService{
         },
         activate: (params) => {
             return this.post('user', 'activate', params)
+        },
+        checkUsername: (params) => {
+            return this.post('user', 'checkUsername', params);
         }
     }
     student = {
