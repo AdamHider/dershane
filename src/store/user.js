@@ -65,6 +65,9 @@ export const useUserStore = defineStore('drsh_user_store', () => {
     function checkUsername (username) {
       return api.user.checkUsername(username)
     }
+    function checkEmail (username) {
+      return api.user.checkEmail(username)
+    }
     
   
     return {
@@ -75,6 +78,7 @@ export const useUserStore = defineStore('drsh_user_store', () => {
       signOut,
       signUp,
       activate,
-      checkUsername
+      checkUsername,
+      checkEmail
     }
   })

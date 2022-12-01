@@ -40,7 +40,12 @@ export const  routes = [
   },
   {
     path: '/user-sign-up',
-    component: () => import('@/pages/UserSignUp.vue'),
+    redirect: '/user-sign-up/step1'
+  },
+  {
+    path: '/user-sign-up/step:step',
+    name: 'user-sign-up',
+    component: () => import('@/pages/UserSignUp.vue')
   },
   {
     path: '/user-activate-:activation_code',

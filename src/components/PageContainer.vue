@@ -1,7 +1,7 @@
 <template>
     <v-main>
       <v-container>
-        <v-responsive class="d-flex align-center text-center fill-height">
+        <v-responsive class="d-flex align-center  fill-height">
           <slot/>
         </v-responsive>
       </v-container>
