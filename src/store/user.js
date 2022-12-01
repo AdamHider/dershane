@@ -28,7 +28,7 @@ export const useUserStore = defineStore('drsh_user_store', () => {
       } else {
         user.active.authorization = data.authorization 
         user.active.data = data.data 
-        user.list[data.authorization.email] = data;
+        user.list[data.authorization.username] = data;
       }
       userStorage.set(user);
     }
@@ -37,8 +37,8 @@ export const useUserStore = defineStore('drsh_user_store', () => {
       await signOut();
       const result = await api.user.signIn(auth)
       if (result.success) {
-        const data = await api.user.get({id: result.id})
-        update({authorization: auth, data: data})
+        const userResponse = await api.user.get({id: result.id})
+        update({authorization: auth, data: userResponse.data})
       }
       return result;
     }

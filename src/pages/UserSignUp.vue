@@ -92,12 +92,12 @@
 </template>
 
 <script setup >
-import { routerPush } from '@/router/index'
+import { routerPush, router } from '@/router/index'
 import { useUserStore } from '@/store/user'
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, watchEffect } from 'vue'
 import { useRoute } from "vue-router";
 
-const { signUp, checkUsername, checkEmail } = useUserStore()
+const { signUp, signIn, checkUsername, checkEmail } = useUserStore()
 const route = useRoute();
 const form = ref(null);
 const formData = reactive({
@@ -118,7 +118,7 @@ const formData = reactive({
       menu: true
     },
     password: {
-      value: '12345678',
+      value: '',
       rules: [
         v => !!v || 'Required.',
         v => (/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,}$/.test(v)) || 'Password must contain at least one digit, be of latin and min 8 characters',
@@ -128,11 +128,12 @@ const formData = reactive({
       required: true
     },
     passwordConfirm: {
-      value: '12345678',
+      value: '',
       rules: [
         v => !!v || 'Required.',
         v => (v === formData.fields.password.value) || 'Your passwords are different',
       ],
+      errors: '',
       reveal: false,
       required: true
     },
@@ -151,24 +152,23 @@ const steps = [
   '', 'name', 'password', 'password', 'email'
 ];
 
-
-
 const validate = async function () {
-  if (formData.valid) formData.step++
-  if (formData.step > 4){
-    const result = await signUp({
+  if (formData.step == 4){
+    const user_auth = {
       username: formData.fields.name.value,
       email: formData.fields.email.value,
       password: formData.fields.password.value
-    });
+    };
+    const result = await signUp(user_auth);
     if (result.success) {
+      await signIn(user_auth);
       routerPush('/student-startup')
     } else {
-      setErrors(result)
-      formData.step = steps.indexOf(result.error_field[0]);
+      formData.fields[steps[formData.step]].errors = message;
     }
     return;
   }
+  if (formData.valid) formData.step++
   routerPush('/user-sign-up/step'+formData.step);
 }
 
@@ -189,16 +189,21 @@ watch(() => formData.fields.email.value, async (currentValue, oldValue) => {
     formData.valid = false;
   }
 });
-watch(() => route.params.step, async (currentValue, oldValue) => {
-  formData.step = currentValue;
-  formData.valid = await form.value.validate()
+watch(() => route.params.step, (currentValue, oldValue) => {
+  console.log(formData.valid);
+  if(!formData.valid && route.params.step > formData.step){
+    router.go(-1);
+    return false;
+  }
+  formData.step = route.params.step;
 });
+watchEffect(async () => {
+  if(form.value){
+    const { valid } = await form.value.validate();
+    formData.valid = valid;
+  } else {
+    formData.valid = true;
+  }
+})
 
-
-const setErrors = (response) => {
-  for(var i in response.error_field){
-      var field = response.error_field[i];
-      formData.fields[field].errors = response.message[field];
-    }
-}
 </script>
