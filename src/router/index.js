@@ -19,8 +19,8 @@ export const  routes = [
     component: () => import('@/pages/Classroom.vue')
   },
   {
-    path: '/student-sign-up-:action',
-    component: () => import('@/pages/StudentSignUp.vue')
+    path: '/classroom-join-:action',
+    component: () => import('@/pages/ClassroomJoin.vue')
   },
   {
     path: '/notifications',
@@ -31,8 +31,8 @@ export const  routes = [
     component: () => import('@/pages/StudentDashboard.vue')
   },
   {
-    path: '/student-startup',
-    component: () => import('@/pages/StudentStartup.vue'),
+    path: '/user-startup',
+    component: () => import('@/pages/UserStartup.vue'),
   },
   {
     path: '/user-sign-in',

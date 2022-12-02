@@ -13,36 +13,32 @@
       lazy-validation
     >
       <v-text-field
-        v-model="formData.fields.email.value"
-        :rules="formData.fields.email.rules"
-        :error-messages="formData.fields.email.errors"
-        label="E-mail"
+        v-model="formData.fields.username.value"
+        :rules="formData.fields.username.rules"
+        :error-messages="formData.fields.username.errors"
+        label="Username or e-mail"
         required
       ></v-text-field>
 
       <v-text-field
         v-model="formData.fields.password.value"
-        :counter="10"
+        :append-icon="formData.fields.password.reveal ? 'mdi-eye' : 'mdi-eye-off'"
         :rules="formData.fields.password.rules"
         :error-messages="formData.fields.password.errors"
+        :type="formData.fields.password.reveal ? 'text' : 'password'"
+        counter
         label="Password"
-        required
+        @click:append="formData.fields.password.reveal = !formData.fields.password.reveal"
       ></v-text-field>
-
-      <v-checkbox
-        v-model="formData.fields.terms.value"
-        :rules="[v => !!v || 'You must agree to continue!']"
-        label="Do you agree?"
-        required
-      ></v-checkbox>
 
       <v-btn
         color="success"
         class="mr-4"
+        :disabled="!formData.valid"
         @click="validate()"
         v-on:keyup.enter="validate()"
       >
-        Validate
+        Sign In
       </v-btn>
     </v-form>
     </page-container>
@@ -56,24 +52,22 @@ import { reactive, ref } from 'vue'
 const form = ref(null);
 
 const formData = reactive({
-  valid: true,
+  valid: false,
   fields: {
-    email: {
-      value: 'ajd1er.adjivapov@gmail.com',
+    username: {
+      value: '',
       rules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+        v => !!v || 'Username or e-mail is required',
       ],
     }, 
     password: {
-      value: '12345678',
+      value: '',
       rules: [
-        v => !!v || 'Name is required',
-        v => (v && v.length <= 8) || 'Name must be less than 10 characters',
+        v => !!v || 'Required.',
+        v => (/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,}$/.test(v)) || 'Password must contain at least one digit, be of latin and min 8 characters',
       ],
-    },
-    terms: {
-      value: true
+      errors: '',
+      reveal: false,
     }
   }
 })
@@ -84,22 +78,15 @@ const validate = async function () {
   const { valid } = await form.value.validate()
   if (valid) {
     const result = await signIn({
-      email: formData.fields.email.value,
-      password: formData.fields.password.value,
-      terms: formData.fields.terms.value
+      username: formData.fields.username.value,
+      password: formData.fields.password.value
     });
     if (result.success) {
-      routerPush('/student-startup')
+      return routerPush('/user-startup');
     } else {
-      setErrors(result)
+      formData.fields.username.errors = result.message;
+      formData.fields.password.errors = result.message;
     }
   }
-}
-
-const setErrors = (response) => {
-  for(var i in response.error_field){
-      var field = response.error_field[i];
-      formData.fields[field].errors = response.message[field];
-    }
 }
 </script>

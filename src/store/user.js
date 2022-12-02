@@ -32,21 +32,31 @@ export const useUserStore = defineStore('drsh_user_store', () => {
       }
       userStorage.set(user);
     }
+
     async function signIn (auth) {
       if(!auth){ return }
       await signOut();
       const result = await api.user.signIn(auth)
       if (result.success) {
-        const userResponse = await api.user.get({id: result.id})
+        const userResponse = await api.user.get()
         update({authorization: auth, data: userResponse.data})
       }
       return result;
     }
+
+    async function autoSignIn () {
+      const activeUser = await api.user.get();
+      if(user.active.data.id && user.active.data.id != activeUser.data.id){
+        await signIn(user.active.authorization);
+      }
+    }
+
     async function signOut(){
       await api.user.signOut();
       update(null);
       return true;
     }
+
     async function signUp (auth) {
       const result = await api.user.signUp(auth)
       if (result.success) {
@@ -54,6 +64,7 @@ export const useUserStore = defineStore('drsh_user_store', () => {
       }
       return result;
     }
+
     async function activate (code) {
       await signOut();
       const result = await api.user.activate(code)
@@ -62,19 +73,21 @@ export const useUserStore = defineStore('drsh_user_store', () => {
       }
       return result;
     }
+
     function checkUsername (username) {
       return api.user.checkUsername(username)
     }
+
     function checkEmail (username) {
       return api.user.checkEmail(username)
     }
     
-  
     return {
       user,
       isAuthorized,
       update,
       signIn,
+      autoSignIn,
       signOut,
       signUp,
       activate,

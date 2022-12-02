@@ -1,4 +1,10 @@
 <template>
+  <v-app-bar color="primary" density="compact">
+      <template v-slot:prepend>
+          <v-btn icon="mdi-arrow-left" v-on:click="$router.go(-1);"></v-btn>
+      </template>
+      <v-app-bar-title>Sign Up</v-app-bar-title>
+  </v-app-bar>
   <page-container no-bottom-bar="true">
     <v-form
       ref="form"
@@ -68,6 +74,12 @@
           label="E-mail"
           required
         ></v-text-field>
+        <v-checkbox
+          v-model="formData.fields.terms.value"
+          :rules="[v => !!v || 'You must agree to continue!']"
+          label="Do you agree?"
+          required
+        ></v-checkbox>
       </v-sheet>
       <v-btn
         v-if="formData.step < 5"  
@@ -105,7 +117,7 @@ const formData = reactive({
   valid: true,
   fields: {
     name: {
-      value: 'admin7',
+      value: '',
       rules: [
         v => !!v || 'Name is required',
         v => (/^([a-zA-Z0-9]*[._]{0,1}[a-zA-Z0-9]*)$/.test(v) && v.length >= 5) || 'Name must be of latin, without spaces and min 5 characters'
@@ -138,12 +150,15 @@ const formData = reactive({
       required: true
     },
     email: {
-      value: 'as@as.com',
+      value: '',
       rules: [
         v => v === '' || ((/.+@.+\..+/.test(v)) || 'E-mail must be valid'),
       ],
       errors: '',
       required: false
+    },
+    terms: {
+      value: false
     }
   }
 })
@@ -161,15 +176,15 @@ const validate = async function () {
     };
     const result = await signUp(user_auth);
     if (result.success) {
-      await signIn(user_auth);
-      routerPush('/student-startup')
+      const logged = await signIn(user_auth);
+      if(logged.success) return routerPush('/student-startup');
     } else {
-      formData.fields[steps[formData.step]].errors = message;
+      formData.fields[steps[formData.step]].errors = result.message;
     }
     return;
   }
   if (formData.valid) formData.step++
-  routerPush('/user-sign-up/step'+formData.step);
+  return routerPush('/user-sign-up/step'+formData.step);
 }
 
 watch(() => formData.fields.name.value, async (currentValue, oldValue) => {
@@ -196,14 +211,7 @@ watch(() => route.params.step, (currentValue, oldValue) => {
     return false;
   }
   formData.step = route.params.step;
+  setTimeout(() => form.value.validate(), 0);
 });
-watchEffect(async () => {
-  if(form.value){
-    const { valid } = await form.value.validate();
-    formData.valid = valid;
-  } else {
-    formData.valid = true;
-  }
-})
 
 </script>

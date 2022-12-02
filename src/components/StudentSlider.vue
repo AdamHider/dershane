@@ -7,7 +7,7 @@
     @swiper="onSwiper"
     @slideChange="onSlideChange"
   >
-    <swiper-slide v-for="(studentItem, index) in student.list" :key="index">
+    <swiper-slide v-for="(studentItem, index) in classroomList" :key="index">
               <v-img
               contain
               height="300"
@@ -20,40 +20,22 @@
   <v-btn  to="/student-sign-up-new">Add student</v-btn>
   <v-btn  to="/student-sign-up-existing">Signin student</v-btn>
 </template>
-<script>
-  // import Swiper core and required modules
-  import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+<script setup>
+// import Swiper core and required modules
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 
-  // Import Swiper Vue.js components
-  import { Swiper, SwiperSlide } from 'swiper/vue';
+// Import Swiper Vue.js components
+import { Swiper, SwiperSlide } from 'swiper/vue';
 
-  // Import Swiper styles
-  import 'swiper/css';
-  import 'swiper/css/navigation';
-  import 'swiper/css/pagination';
-  import 'swiper/css/scrollbar';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 
-import { useStudentStore } from '@/store/student'
+const classroomList = [];
 
-  // Import Swiper styles
-  export default {
-    components: {
-      Swiper,
-      SwiperSlide,
-    },
-    setup() {
-      const { student } = useStudentStore()
-      const onSwiper = (swiper) => {
-      };
-      const onSlideChange = () => {
-      };
-      return {
-        student,
-        onSwiper,
-        onSlideChange,
-        modules: [Navigation, Pagination, Scrollbar, A11y],
-      };
-    },
-  };
+const onSwiper = (swiper) => {};
+const onSlideChange = () => {};
 </script>
   

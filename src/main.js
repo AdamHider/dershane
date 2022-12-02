@@ -13,6 +13,7 @@ import PageContainer from './components/PageContainer.vue'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { router } from '@/router'
+import { useUserStore } from '@/store/user'
 
 // Plugins
 import { registerPlugins } from '@/plugins'
@@ -28,3 +29,6 @@ app.component('page-container', PageContainer);
 registerPlugins(app)
 
 app.mount('#app')
+
+const { autoSignIn } = useUserStore()
+autoSignIn()

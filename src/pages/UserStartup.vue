@@ -38,7 +38,7 @@
                 >
                     <template v-slot:append>
                     <v-btn
-                        :disabled="userItem.authorization.email == user.active.authorization.email"
+                        :disabled="(userItem.data.id == user.active.data.id)"
                         icon="mdi-information"
                         variant="text"
                         @click="signIn(userItem.authorization); dialogOpened = false;"

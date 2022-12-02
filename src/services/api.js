@@ -14,7 +14,7 @@ export class ApiService {
       request_data: params
     };
   }
-  post = async(context, method, params) =>  {
+  post = async(context, method, params = {}) =>  {
     var self = this;
     let responseData = {};
     const resource = this.setResource(context, method);
@@ -54,7 +54,7 @@ export class Api extends ApiService{
             return this.post('user', 'getItem', params)
         },
         signUp: (params) =>  {
-            return this.post('user', 'signUp', params)
+            return this.post('user', 'addItem', params)
         },
         signOut: (params) =>  {
             return this.post('user', 'signOut', params);
@@ -72,21 +72,15 @@ export class Api extends ApiService{
             return this.post('user', 'checkEmail', params);
         }
     }
-    student = {
+    classroom = {
         get: (params) =>  {
-            return this.post('student', 'getItem', params)
+            return this.post('classroom', 'getItem', params)
         },
-        signUp: (params) =>  {
-            return this.post('student', 'addItem', params)
+        setActive: (params) => {
+          return this.post('classroom', 'setActive', params)
         },
-        signOut: (params) =>  {
-            return this.post('student', 'unauthorizeItem', params);
-        },
-        signIn: (params) => {
-            return this.post('student', 'authorizeItem', params);
-        },
-        activate: (params) => {
-            return this.post('student', 'activate', params)
+        linkToUser: (params) => {
+          return this.post('classroom', 'linkToUser', params)
         }
     }
 }
