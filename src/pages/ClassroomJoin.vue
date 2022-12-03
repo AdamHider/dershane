@@ -11,7 +11,7 @@
       v-model="formData.valid"
       @submit.prevent="validate()"
     >
-      <v-sheet v-if="formData.step == 1">
+      <v-sheet>
         <v-text-field
           v-model="formData.fields.classroom_code.value"
           :rules="formData.fields.classroom_code.rules"
@@ -20,35 +20,13 @@
           required
         ></v-text-field>
       </v-sheet>
-      <v-sheet v-else-if="formData.step == 2">
-        <v-text-field
-          v-model="formData.fields.name.value"
-          :counter="10"
-          :rules="formData.fields.name.rules"
-          :error-messages="formData.fields.name.errors"
-          label="Name"
-          required
-        ></v-text-field>
-      </v-sheet>
-
-
       <v-btn
-        v-if="formData.step!==1"  
-        class="mr-4"
-        @click="formData.step--;"
-      >
-        Previous
-      </v-btn>
-
-      <v-btn
-        v-if="formData.step < 5"  
         color="success"
         class="mr-4"
         @click="validate()"
         v-on:keyup.enter="validate()"
       >
-        <label v-if="formData.step == 4">Sign Up</label>
-        <label v-else>Next</label>
+        <label>Join</label>
       </v-btn>
     </v-form>
     </page-container>
@@ -56,68 +34,47 @@
 
 <script setup >
 import { routerPush } from '@/router/index'
-import { useStudentStore } from '@/store/student'
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from "vue-router";
+import { useUserStore } from '@/store/user'
 
 const form = ref(null);
+const { setActiveClassroom, user } = useUserStore()
 
 const formData = reactive({
-  step: 1,
   valid: true,
   fields: {
     classroom_code: {
-      value: 'd1d1d1',
+      value: '',
       rules: [
         v => !!v || 'Classroom code is required',
         v => (v && v.length > 5) || 'Classroom code must be valid',
-      ],
-      errors: '',
-    },
-    name: {
-      value: 'admin7',
-      rules: [
-        v => !!v || 'Name is required',
-        v => (v && v.length <= 10) || 'Name must be less than 10 characters'
       ],
       errors: '',
     }
   }
 })
 
-const steps = [
-  '', 'classroom_code', 'name'
-];
-
-const route = useRoute();
-const { signUp } = useStudentStore()
-const action = route.params.action;
 
 
 const validate = async function () {
   const { valid } = await form.value.validate()
-  if (valid) formData.step++
-  if (formData.step == steps.length){
-    const result = await signUp({
-      classroom_code: formData.fields.classroom_code.value,
-      name: formData.fields.name.value
-    }, action);
-    if (result.success) {
-      routerPush('/student-startup')
-    } else {
-      setErrors(result)
-      formData.step = steps.indexOf(result.error_field[0]);
-    }
+  if(valid){
+    const isset = await setActiveClassroom(formData.fields.classroom_code.value);
+    if(isset) return routerPush('/user-startup');
+    formData.fields.classroom_code.errors = 'Error';
+  }  
+}
+
+const route = useRoute();
+if(route.params.code != 0){
+  formData.fields.classroom_code.value = route.params.code;
+}
+
+onMounted(() => {
+  if(route.params.code != 0){
+    validate();
   }
-}
+})
 
-
-
-    
-const setErrors = (response) => {
-  for(var i in response.error_field){
-      var field = response.error_field[i];
-      formData.fields[field].errors = response.message[field];
-    }
-}
 </script>

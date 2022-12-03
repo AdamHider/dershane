@@ -9,7 +9,7 @@
     <BottomBar v-if="!noBottomBar"/>
 </template>
 <script>
-  import BottomBar from '@/components/BottomBar.vue';
+import BottomBar from '@/components/BottomBar.vue';
   
 export default {
   props: {

@@ -1,7 +1,7 @@
 <template>
   <v-app-bar color="primary" density="compact">
       <template v-slot:prepend>
-          <v-btn icon="mdi-account-convert-outline" to="/student-startup"></v-btn>
+          <v-btn icon="mdi-account-convert-outline" to="/user-startup"></v-btn>
       </template>
       <v-app-bar-title>Classroom</v-app-bar-title>
       <template v-slot:append >

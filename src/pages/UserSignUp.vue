@@ -130,7 +130,7 @@ const formData = reactive({
       menu: true
     },
     password: {
-      value: '',
+      value: 'aaaa1111',
       rules: [
         v => !!v || 'Required.',
         v => (/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,}$/.test(v)) || 'Password must contain at least one digit, be of latin and min 8 characters',
@@ -140,7 +140,7 @@ const formData = reactive({
       required: true
     },
     passwordConfirm: {
-      value: '',
+      value: 'aaaa1111',
       rules: [
         v => !!v || 'Required.',
         v => (v === formData.fields.password.value) || 'Your passwords are different',
@@ -177,7 +177,7 @@ const validate = async function () {
     const result = await signUp(user_auth);
     if (result.success) {
       const logged = await signIn(user_auth);
-      if(logged.success) return routerPush('/student-startup');
+      if(logged.success) return routerPush('/user-startup');
     } else {
       formData.fields[steps[formData.step]].errors = result.message;
     }
@@ -205,7 +205,6 @@ watch(() => formData.fields.email.value, async (currentValue, oldValue) => {
   }
 });
 watch(() => route.params.step, (currentValue, oldValue) => {
-  console.log(formData.valid);
   if(!formData.valid && route.params.step > formData.step){
     router.go(-1);
     return false;

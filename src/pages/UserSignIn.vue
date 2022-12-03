@@ -47,7 +47,7 @@
 <script setup >
 import { routerPush } from '@/router/index'
 import { useUserStore } from '@/store/user'
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 
 const form = ref(null);
 
@@ -55,13 +55,13 @@ const formData = reactive({
   valid: false,
   fields: {
     username: {
-      value: '',
+      value: 'admin888',
       rules: [
         v => !!v || 'Username or e-mail is required',
       ],
     }, 
     password: {
-      value: '',
+      value: 'aaaa1111',
       rules: [
         v => !!v || 'Required.',
         v => (/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,}$/.test(v)) || 'Password must contain at least one digit, be of latin and min 8 characters',
@@ -89,4 +89,7 @@ const validate = async function () {
     }
   }
 }
+onMounted(() => {
+  form.value.validate();
+});
 </script>

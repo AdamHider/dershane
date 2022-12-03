@@ -8,7 +8,9 @@
     <page-container no-bottom-bar="true">
       <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
       <h1 class="text-h2 font-weight-bold">Student Startup</h1>
-      <StudentSlider/>
+      <Suspense>
+        <ClassroomSlider/>
+      </Suspense>
       <v-sheet>
         <div v-if="user.active?.data.id">
             Welcome, dear user {{user.active?.data.name}}
@@ -52,6 +54,9 @@
         </v-card>
         </v-dialog>
       <v-btn rounded="lg" @click="dialogOpened = true">Modal</v-btn>
+      <h2>{{user.active?.activeClassroom}}</h2>
+      <v-btn rounded="lg" @click="setActiveClassroom('000000')">Update 000000</v-btn>
+      <v-btn rounded="lg" @click="setActiveClassroom('bb79d3')">Update bb79d3</v-btn>
 
     </page-container>
 </template>
@@ -61,11 +66,11 @@ import { reactive, watch, ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/store/user'
 import { api  } from '@/services/'
-import StudentSlider from '@/components/StudentSlider.vue'
+import ClassroomSlider from '@/components/ClassroomSlider.vue'
 
 const dialogOpened = ref(false);
 
-const { signOut, signIn, user, isAuthorized } = useUserStore()
+const { signOut, signIn, setActiveClassroom, user, isAuthorized } = useUserStore()
 
 
 </script>

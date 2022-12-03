@@ -19,7 +19,11 @@ export const  routes = [
     component: () => import('@/pages/Classroom.vue')
   },
   {
-    path: '/classroom-join-:action',
+    path: '/classroom-join',
+    redirect: '/classroom-join/code=0'
+  },
+  {
+    path: '/classroom-join/code=:code',
     component: () => import('@/pages/ClassroomJoin.vue')
   },
   {

@@ -25,7 +25,6 @@
 
 <script setup>
 import { useCourses } from '@/composable/useCourses.js'
-import { ref, onMounted } from 'vue'
 
 const { courses, getList } = useCourses();
 getList();

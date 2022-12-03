@@ -70,11 +70,17 @@ export class Api extends ApiService{
         },
         checkEmail: (params) => {
             return this.post('user', 'checkEmail', params);
+        },
+        setActiveClassroom: (params) => {
+            return this.post('user', 'setActiveClassroom', params);
         }
     }
     classroom = {
         get: (params) =>  {
             return this.post('classroom', 'getItem', params)
+        },
+        getList: (params) =>  {
+            return this.post('classroom', 'getList', params)
         },
         setActive: (params) => {
           return this.post('classroom', 'setActive', params)
