@@ -36,10 +36,10 @@
 import { routerPush } from '@/router/index'
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from "vue-router";
-import { useUserStore } from '@/store/user'
+import { useClassroomStore } from '@/store/classroom'
 
 const form = ref(null);
-const { setActiveClassroom, user } = useUserStore()
+const { setActive  } = useClassroomStore()
 
 const formData = reactive({
   valid: true,
@@ -60,7 +60,7 @@ const formData = reactive({
 const validate = async function () {
   const { valid } = await form.value.validate()
   if(valid){
-    const isset = await setActiveClassroom(formData.fields.classroom_code.value);
+    const isset = await setActive(formData.fields.classroom_code.value);
     if(isset) return routerPush('/user-startup');
     formData.fields.classroom_code.errors = 'Error';
   }  

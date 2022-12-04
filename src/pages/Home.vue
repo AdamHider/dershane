@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar color="primary" density="compact">
+    <v-app-bar color="transparent" density="compact" class="text-white" elevation="0">
         <template v-slot:prepend>
             <v-btn icon="mdi-account-convert-outline" to="/user-startup"></v-btn>
         </template>

@@ -1,34 +1,35 @@
-<template>
-    <v-app-bar color="primary" density="compact">
+<template  withBackground="true">
+    <v-app-bar color="transparent" density="compact" class="text-white" elevation="0">
         <template v-slot:prepend>
             <v-btn icon="mdi-arrow-left" v-on:click="$router.go(-1);"></v-btn>
         </template>
-        <v-app-bar-title>Student Startup</v-app-bar-title>
+        <v-app-bar-title></v-app-bar-title>
     </v-app-bar>
-    <page-container no-bottom-bar="true">
-      <div class="text-body-2 font-weight-light mb-n1">Welcome to</div>
-      <h1 class="text-h2 font-weight-bold">Student Startup</h1>
-      <Suspense>
+    <page-container no-bottom-bar="true" container-class="pa-0" align="center">
+      <PageHeader v-if="user.active?.data.id" title="User Dashboard" subtitle="Choose your classroom" text-color="white"/>
+      <Suspense v-if="user.active?.data.id">
         <ClassroomSlider/>
       </Suspense>
-      <v-sheet>
-        <div v-if="user.active?.data.id">
-            Welcome, dear user {{user.active?.data.name}}
-            <div class="d-flex justify-center align-baseline" style="gap: 1rem">
-                <v-btn rounded="lg" @click="signOut()">sign out</v-btn>
-            </div>
+      <v-sheet color="transparent" class="text-center pa-4">
+        <div v-if="user.active?.data.id" class="d-flex flex-no-wrap justify-space-between align-center">
+            <h4 class="text-white">{{user.active?.data.name}}</h4>
+            <v-btn variant="text" @click="signOut()" color="white">Sign out</v-btn>
         </div>
         <div v-else>
-            <p>
+            <h4 class="mt-2 mb-2 text-white" >
             You are not logged in. You may just: 
-            </p>
-            <div class="d-flex justify-center align-baseline" style="gap: 1rem">
-                <v-btn rounded="lg" to="/user-sign-in">sign in</v-btn> or <v-btn rounded="lg" to="/user-sign-up">sign up</v-btn> 
+            </h4>
+            <div class="d-flex justify-center align-baseline">
+                <v-btn variant="text" color="white" to="/user-sign-in">sign in</v-btn> 
+                <b class="text-white">or</b> 
+                <v-btn variant="text" color="white" to="/user-sign-up">sign up</v-btn> 
             </div>
         </div>
+        <v-divider color="white" class="mt-2 mb-2"></v-divider>
+        <v-btn v-if="(Object.keys(user.list).length > 0)" variant="text" color="white" rounded="lg" @click="dialogOpened=true">Choose existing accounts</v-btn>
       </v-sheet>
       <v-dialog v-model="dialogOpened">
-        <v-card >
+        <v-card>
             <v-card-title class="text-h5">
                 Saved users
             </v-card-title>
@@ -43,7 +44,7 @@
                         :disabled="(userItem.data.id == user.active.data.id)"
                         icon="mdi-information"
                         variant="text"
-                        @click="signIn(userItem.authorization); dialogOpened = false;"
+                        @click="signIn(userItem.authorization, userItem.activeClassroom); dialogOpened = false;"
                     >Sign In</v-btn>
                     </template>
                 </v-list-item>
@@ -53,24 +54,19 @@
             </v-card-actions>
         </v-card>
         </v-dialog>
-      <v-btn rounded="lg" @click="dialogOpened = true">Modal</v-btn>
-      <h2>{{user.active?.activeClassroom}}</h2>
-      <v-btn rounded="lg" @click="setActiveClassroom('000000')">Update 000000</v-btn>
-      <v-btn rounded="lg" @click="setActiveClassroom('bb79d3')">Update bb79d3</v-btn>
-
     </page-container>
 </template>
 
 <script setup>
-import { reactive, watch, ref, computed } from 'vue'
-import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
 import { useUserStore } from '@/store/user'
-import { api  } from '@/services/'
 import ClassroomSlider from '@/components/ClassroomSlider.vue'
+import PageHeader from '@/components/PageHeader.vue'
 
 const dialogOpened = ref(false);
 
-const { signOut, signIn, setActiveClassroom, user, isAuthorized } = useUserStore()
+
+const { signOut, signIn, user, isAuthorized } = useUserStore()
 
 
 </script>

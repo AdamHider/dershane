@@ -9,10 +9,7 @@ const classroom = reactive({
 });
 
 export function useClassroom() {
-    
-
     watch(user.active, (newData, oldData) => {
-        console.log('watch')
         getList();
     });
     async function getList () {

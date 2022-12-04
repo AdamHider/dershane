@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 //import routes from '~pages'
+import { useUserStore } from '@/store/user'
 
 export const  routes = [
   {
@@ -9,14 +10,17 @@ export const  routes = [
   {
     path: '/home',
     component: () => import('@/pages/Home.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: '/lessons-:category_id',
-    component: () => import('@/pages/Lessons.vue')
+    component: () => import('@/pages/Lessons.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: '/classroom',
-    component: () => import('@/pages/Classroom.vue')
+    component: () => import('@/pages/Classroom.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: '/classroom-join',
@@ -28,11 +32,13 @@ export const  routes = [
   },
   {
     path: '/notifications',
-    component: () => import('@/pages/Notifications.vue')
+    component: () => import('@/pages/Notifications.vue'),
+    meta: { requiresAuth: true }
   },
   {
-    path: '/student-dashboard',
-    component: () => import('@/pages/StudentDashboard.vue')
+    path: '/user-dashboard',
+    component: () => import('@/pages/UserDashboard.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: '/user-startup',
@@ -63,6 +69,21 @@ export const router = createRouter({
   scrollBehavior() {
     return { top: 0 }
   },
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    const { user } = useUserStore()
+    if (!user.active.data.id) {
+      router.push({ path: "/user-startup"})
+    } else {
+      next() // go to wherever I'm going
+    }
+  } else {
+    next() // does not require auth, make sure to always call next()!
+  }
 })
 
 export function routerPush (path, params){

@@ -70,9 +70,6 @@ export class Api extends ApiService{
         },
         checkEmail: (params) => {
             return this.post('user', 'checkEmail', params);
-        },
-        setActiveClassroom: (params) => {
-            return this.post('user', 'setActiveClassroom', params);
         }
     }
     classroom = {
@@ -83,10 +80,12 @@ export class Api extends ApiService{
             return this.post('classroom', 'getList', params)
         },
         setActive: (params) => {
-          return this.post('classroom', 'setActive', params)
-        },
-        linkToUser: (params) => {
-          return this.post('classroom', 'linkToUser', params)
+            return this.post('classroom', 'setActive', params);
         }
+    }
+    profile = {
+        get: (params) =>  {
+            return this.post('profile', 'getItem', params)
+        },
     }
 }

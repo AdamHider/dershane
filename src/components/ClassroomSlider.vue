@@ -1,9 +1,9 @@
 <template>
-  <v-sheet  class="text-center" v-if="user.active.data.id">
+  <v-sheet class="text-center" v-if="user.active.data.id"  color="transparent">
     <swiper
       ref="classroomSlider"
       :modules="[Navigation, Pagination, Scrollbar, A11y]"
-      :slides-per-view="2"
+      :slides-per-view="1.3"
       :centeredSlides="true"
       :initialSlide="classroom.list.findIndex((classroom) => classroom.code == user.active.activeClassroom)"
       navigation
@@ -19,7 +19,7 @@
         </v-card>
       </swiper-slide>
     </swiper>
-    <v-btn rounded="lg" @click="select()" :disabled="(activeItem.code == user.active.activeClassroom)">
+    <v-btn rounded="lg" @click="select()" :disabled="(activeItem.code == classroom.active.code)">
       <template v-if="(activeItem.id !== 0)">
         Enter {{activeItem.title}}
       </template>
@@ -33,9 +33,9 @@
 import { routerPush, router } from '@/router/index'
 import { ref } from 'vue';
 import { useUserStore } from '@/store/user'
+import { useClassroomStore } from '@/store/classroom'
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { useClassroom } from '@/composable/useClassroom.js'
 import { CONFIG } from '@/config.js'
 
 import 'swiper/css';
@@ -43,9 +43,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
-const { setActiveClassroom, user } = useUserStore()
-console.log('load')
-const { classroom, getList } = useClassroom();
+const { user } = useUserStore()
+const { classroom, getList, setActive } = useClassroomStore();
 if(user.active.data.id){
   await getList();
 }
@@ -64,7 +63,7 @@ const select = async (index) => {
     //classroomSlider.slideTo(index);
   }
   if(activeItem.value.id == 0) return routerPush('/classroom-join');
-  await setActiveClassroom(activeItem.value.code);
+  await setActive(activeItem.value.code);
 };
 
 const onSwiper = (swiper) => {

@@ -12,7 +12,7 @@
             <v-icon>mdi-map-marker</v-icon>
             Notifications
         </v-btn>
-        <v-btn value="student-dashboard" to="/student-dashboard">
+        <v-btn value="user-dashboard" to="/user-dashboard">
             <v-icon>mdi-map-marker</v-icon>
             Student
         </v-btn>

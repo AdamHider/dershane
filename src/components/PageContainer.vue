@@ -1,22 +1,24 @@
 <template>
-    <v-main>
-      <v-container>
-        <v-responsive class="d-flex align-center  fill-height">
-          <slot/>
-        </v-responsive>
-      </v-container>
-    </v-main>
+  <v-main>
+    <v-container :class="`fill-height ${containerClass}`">
+      <v-responsive :class="`d-flex align-${align} fill-height`">
+        <slot/>
+      </v-responsive>
+    </v-container>
     <BottomBar v-if="!noBottomBar"/>
+  </v-main>
 </template>
 <script>
 import BottomBar from '@/components/BottomBar.vue';
   
 export default {
   props: {
-    noBottomBar: false
+    noBottomBar: false,
+    align: 'start',
+    containerClass: ''
   },
   components: {
-    BottomBar
+    BottomBar,
   }
 };
 </script>
