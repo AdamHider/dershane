@@ -39,36 +39,10 @@ export const useClassroomStore = defineStore('drsh_classroom_store', () => {
         throw new Error(`classroom are null: `+e); 
       }      
     }
-    async function setActive (code) {
-      if(!user.active.data.id) return setActiveTemporary (code);
-      await api.classroom.setActive(code);
-      if(code){
-        const classroomResponse = await api.classroom.get({code: code});
-        return update({active: classroomResponse.data});
-      }
-      return update({active: {}});
-    }
-
-    function setActiveTemporary(code) {
-      tmp_code = code;
-      return true;
-    }
-    
-    watch(user.active, async (newData, oldData) => {
-      if(tmp_code){
-        await setActive(tmp_code);
-        setActiveTemporary (false);
-      } else {
-        await setActive();
-      }
-      getList();
-    });
 
     return {
       classroom,
       update,
-      getList,
-      setActive,
-      setActiveTemporary
+      getList
     }
   })

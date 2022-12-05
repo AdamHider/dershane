@@ -109,11 +109,8 @@ import { routerPush, router } from '@/router/index'
 import { useUserStore } from '@/store/user'
 import { reactive, ref, watch, watchEffect } from 'vue'
 import { useRoute } from "vue-router";
-import { useClassroomStore } from '@/store/classroom'
-import { CONFIG } from '@/config.js'
 
 const { signUp, signIn, checkUsername, checkEmail } = useUserStore()
-const { setActive  } = useClassroomStore()
 const route = useRoute();
 const form = ref(null);
 const formData = reactive({
@@ -180,9 +177,8 @@ const validate = async function () {
     };
     const result = await signUp(user_auth);
     if (result.success) {
-      await setActive(CONFIG.DEFAULT_CLASSROOM_CODE);
       const logged = await signIn(user_auth);
-      if(logged.success) return routerPush('/user-dashboard');
+      if(logged.success) return routerPush('/user-startup');
     } else {
       formData.fields[steps[formData.step]].errors = result.message;
     }
