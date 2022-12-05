@@ -6,8 +6,11 @@ import { CONFIG } from '@/config.js'
 
 const userDefault = {
   active: {
-    authorization: {},
-    activeClassroom: CONFIG.DEFAULT_CLASSROOM_CODE,
+    authorization: {
+      username: '',
+      password: '',
+      classroomCode: CONFIG.DEFAULT_CLASSROOM_CODE
+    },
     data: {}
   },
   list: {
@@ -64,9 +67,12 @@ export const useUserStore = defineStore('drsh_user_store', () => {
     }
 
     async function signUp (auth) {
+      if(!auth.classroom_code){
+        auth.classroom_code = CONFIG.DEFAULT_CLASSROOM_CODE
+      }
       const result = await api.user.signUp(auth)
       if (result.success) {
-        update({authorization: auth})
+        update({authorization: result.data})
       }
       return result;
     }

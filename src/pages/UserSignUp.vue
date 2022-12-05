@@ -118,9 +118,9 @@ const validate = async function () {
     const user_auth = {
       password: formData.fields.password.value
     };
-    const result = await signUp(user_auth);
-    if (result.success) {
-      const logged = await signIn(user_auth);
+    const authResponse = await signUp(user_auth);
+    if (authResponse.success) {
+      const logged = await signIn(authResponse.data);
       if(logged.success) return routerPush('/user-startup');
     } else {
       formData.fields[steps[formData.step]].errors = result.message;

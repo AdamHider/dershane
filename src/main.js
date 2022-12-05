@@ -7,7 +7,6 @@
 // Components
 import App from './App.vue'
 import PageContainer from './components/PageContainer.vue'
-import VOtpInput from "vue3-otp-input";
 
 
 // Composables
@@ -26,7 +25,6 @@ app.use(createPinia());
 app.use(router);
 
 app.component('page-container', PageContainer);
-app.component('v-otp-input', VOtpInput);
 
 registerPlugins(app)
 
