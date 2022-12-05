@@ -19,7 +19,7 @@
         </v-card>
       </swiper-slide>
     </swiper>
-    <v-btn rounded="lg" @click="select()" :disabled="(activeItem.code == classroom.active.code)">
+    <v-btn rounded="lg" @click="select()" :disabled="(activeItem.code == user.active.activeClassroom)">
       <template v-if="(activeItem.id !== 0)">
         Enter {{activeItem.title}}
       </template>
@@ -43,10 +43,10 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
-const { user } = useUserStore()
-const { classroom, getList, setActive } = useClassroomStore();
+const { setActiveClassroom, user } = useUserStore()
+const { classroom, getClassrooms } = useClassroomStore();
 if(user.active.data.id){
-  await getList();
+  await getClassrooms();
 }
 
 const activeItem = ref({});
@@ -63,7 +63,7 @@ const select = async (index) => {
     //classroomSlider.slideTo(index);
   }
   if(activeItem.value.id == 0) return routerPush('/classroom-join');
-  await setActive(activeItem.value.code);
+  await setActiveClassroom(activeItem.value.code);
 };
 
 const onSwiper = (swiper) => {

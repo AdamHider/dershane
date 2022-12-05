@@ -31,7 +31,15 @@ export const useClassroomStore = defineStore('drsh_classroom_store', () => {
       classroomStorage.set(classroom);
       return true;
     }
-    async function getList () {
+    async function getClassroom () {
+      try{
+        const classroomResponse = await api.classroom.get();
+        return update({active: classroomResponse.data});
+      } catch(e){
+        throw new Error(`classroom are null: `+e); 
+      }      
+    }
+    async function getClassrooms () {
       try{
         const classroomResponse = await api.classroom.getList({mode: 'by_user'});
         return update({list: classroomResponse.data});
@@ -43,6 +51,7 @@ export const useClassroomStore = defineStore('drsh_classroom_store', () => {
     return {
       classroom,
       update,
-      getList
+      getClassroom,
+      getClassrooms
     }
   })

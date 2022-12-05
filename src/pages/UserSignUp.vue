@@ -12,38 +12,10 @@
         v-model="formData.valid"
         @submit.prevent="validate()"
       >
-        <v-sheet v-if="formData.step == 1">
-          <v-text-field
-            v-model="formData.fields.name.value"
-            :rules="formData.fields.name.rules"
-            :error-messages="formData.fields.name.errors"
-            label="Name"
-            required
-          >
-            <template v-if="formData.valid" v-slot:append-inner>
-                <v-icon color="success" icon="mdi-check"></v-icon>
-            </template>
-          </v-text-field>
-          <v-card  
-            v-if="(formData.fields.name.suggestions.length > 0)"
-            class="pa-2  mt-2 mb-2"
-          >
-            <v-list>
-              <v-list-item
-                v-for="(item, index) in formData.fields.name.suggestions"
-                :key="index"
-                :value="item"
-                @click="(formData.fields.name.value = item); formData.fields.name.suggestions = []"
-              >
-                <v-list-item-title class="text-left">{{ item }}</v-list-item-title>
-                <template v-slot:append>        
-                  <v-icon color="success" icon="mdi-check"></v-icon>
-                </template>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-sheet>
-        <v-sheet v-else-if="(formData.step == 2)">
+        <v-sheet v-if="(formData.step == 1)">
+          <OTPInput
+            :digit-count="4"
+          ></OTPInput>
             <v-text-field
               v-model="formData.fields.password.value"
               :append-icon="formData.fields.password.reveal ? 'mdi-eye' : 'mdi-eye-off'"
@@ -55,7 +27,7 @@
               @click:append="formData.fields.password.reveal = !formData.fields.password.reveal"
             ></v-text-field>
         </v-sheet>
-        <v-sheet v-else-if="(formData.step == 3)">
+        <v-sheet v-else-if="(formData.step == 2)">
             <v-text-field
               v-model="formData.fields.passwordConfirm.value"
               :append-icon="formData.fields.passwordConfirm.reveal ? 'mdi-eye' : 'mdi-eye-off'"
@@ -66,14 +38,7 @@
               @click:append="formData.fields.passwordConfirm.reveal = !formData.fields.passwordConfirm.reveal"
             ></v-text-field>
         </v-sheet>
-        <v-sheet v-else-if="(formData.step == 4)">
-          <v-text-field
-            v-model="formData.fields.email.value"
-            :rules="formData.fields.email.rules"
-            :error-messages="formData.fields.email.errors"
-            label="E-mail"
-            required
-          ></v-text-field>
+        <v-sheet v-else-if="(formData.step == 3)">
           <v-checkbox
             v-model="formData.fields.terms.value"
             :rules="[v => !!v || 'You must agree to continue!']"
@@ -82,14 +47,14 @@
           ></v-checkbox>
         </v-sheet>
         <v-btn
-          v-if="formData.step < 5"  
+          v-if="(formData.step < 4)"  
           color="success"
           class="mr-4"
           :disabled="!formData.valid"
           @click="validate()"
           v-on:keyup.enter="validate()"
         >
-          <label v-if="formData.step == 4">Sign Up</label>
+          <label v-if="(formData.step == 3)">Sign Up</label>
           <label v-else>Next</label>
         </v-btn>
         <v-btn
@@ -105,6 +70,7 @@
 </template>
 
 <script setup >
+import  OTPInput from '@/components/OTPInput'
 import { routerPush, router } from '@/router/index'
 import { useUserStore } from '@/store/user'
 import { reactive, ref, watch, watchEffect } from 'vue'
@@ -117,19 +83,6 @@ const formData = reactive({
   step: route.params.step,
   valid: true,
   fields: {
-    name: {
-      value: '',
-      rules: [
-        v => !!v || 'Name is required',
-        v => (/^([a-zA-Z0-9]*[._]{0,1}[a-zA-Z0-9]*)$/.test(v) && v.length >= 5) || 'Name must be of latin, without spaces and min 5 characters'
-      ],
-      suggestions: [],
-      errors: '',
-      required: true,
-      focused: true,
-      active: true,
-      menu: true
-    },
     password: {
       value: 'aaaa1111',
       rules: [
@@ -150,14 +103,6 @@ const formData = reactive({
       reveal: false,
       required: true
     },
-    email: {
-      value: '',
-      rules: [
-        v => v === '' || ((/.+@.+\..+/.test(v)) || 'E-mail must be valid'),
-      ],
-      errors: '',
-      required: false
-    },
     terms: {
       value: false
     }
@@ -165,14 +110,12 @@ const formData = reactive({
 })
 
 const steps = [
-  '', 'name', 'password', 'password', 'email'
+  '', 'password', 'password', 'terms'
 ];
 
 const validate = async function () {
-  if (formData.step == 4){
+  if (formData.step == 3){
     const user_auth = {
-      username: formData.fields.name.value,
-      email: formData.fields.email.value,
       password: formData.fields.password.value
     };
     const result = await signUp(user_auth);
@@ -188,23 +131,6 @@ const validate = async function () {
   return routerPush('/user-sign-up/step'+formData.step);
 }
 
-watch(() => formData.fields.name.value, async (currentValue, oldValue) => {
-    formData.fields.name.errors = '';
-    const result = await checkUsername({username: currentValue});
-    if(!result.success){
-      formData.fields.name.errors = result.message;
-    }
-    formData.fields.name.suggestions = result.data;
-});
-watch(() => formData.fields.email.value, async (currentValue, oldValue) => {
-  formData.fields.email.errors = '';
-  if (!currentValue) return;
-  const result = await checkEmail({email: currentValue});
-  if(!result.success){
-    formData.fields.email.errors = result.message;
-    formData.valid = false;
-  }
-});
 watch(() => route.params.step, (currentValue, oldValue) => {
   if(!formData.valid && route.params.step > formData.step){
     router.go(-1);
