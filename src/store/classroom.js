@@ -7,7 +7,6 @@ import { useUserStore } from '@/store/user'
 
 const { user } = useUserStore()
 
-const defaultCode = CONFIG.DEFAULT_CLASSROOM_CODE;
 
 const classroomDefault = {
   active: {},
@@ -48,6 +47,9 @@ export const useClassroomStore = defineStore('drsh_classroom_store', () => {
       }      
     }
 
+    watch(user.active, async (newData, oldData) => {
+      getClassrooms();
+    });
     return {
       classroom,
       update,

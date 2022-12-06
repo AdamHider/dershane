@@ -12,8 +12,7 @@
         v-model="formData.valid" 
         @submit.prevent="validate()">
         <v-sheet v-if="(formData.step == 1)">
-          <div v-if="formData.passwordIsPin">
-            <v-input
+          <v-input v-if="formData.passwordIsPin"
             v-model="formData.fields.password.value"
             :rules="formData.fields.password.rules"
           >
@@ -22,10 +21,10 @@
               :default="formData.fields.password.value"
               @update:otp="formData.valid = $event.valid; formData.fields.password.value = $event.value;"
               :digit-count="4"
+              label="Password"
             >
             </OTPInput>
-            </v-input>
-          </div>
+          </v-input>
           <v-text-field v-else
             v-model="formData.fields.password.value"
             :append-icon="formData.fields.password.reveal ? 'mdi-eye' : 'mdi-eye-off'"
@@ -47,15 +46,37 @@
           </v-chip>
         </v-sheet>
         <v-sheet v-else-if="(formData.step == 2)">
-            <v-text-field
-              v-model="formData.fields.passwordConfirm.value"
-              :append-icon="formData.fields.passwordConfirm.reveal ? 'mdi-eye' : 'mdi-eye-off'"
-              :rules="formData.fields.passwordConfirm.rules"
-              :type="formData.fields.passwordConfirm.reveal ? 'text' : 'password'"
-              counter
+          <v-input v-if="formData.passwordIsPin"
+            v-model="formData.fields.passwordConfirm.value"
+            :rules="formData.fields.passwordConfirm.rules"
+          >
+            <OTPInput 
+              :fieldConfig="formData.fields.passwordConfirm"
+              :default="formData.fields.passwordConfirm.value"
+              @update:otp="formData.valid = $event.valid; formData.fields.passwordConfirm.value = $event.value;"
+              :digit-count="4"
               label="Confirm password"
-              @click:append="formData.fields.passwordConfirm.reveal = !formData.fields.passwordConfirm.reveal"
-            ></v-text-field>
+            >
+            </OTPInput>
+          </v-input>
+          <v-text-field  v-else
+            v-model="formData.fields.passwordConfirm.value"
+            :append-icon="formData.fields.passwordConfirm.reveal ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="formData.fields.passwordConfirm.rules"
+            :type="formData.fields.passwordConfirm.reveal ? 'text' : 'password'"
+            counter
+            label="Confirm password"
+            @click:append="formData.fields.passwordConfirm.reveal = !formData.fields.passwordConfirm.reveal"
+          ></v-text-field>
+          <v-chip
+            variant="text"
+            class="ma-4"
+            :ripple="false" 
+            @click="formData.passwordIsPin = !formData.passwordIsPin; formData.fields.password.value = '';"
+          >
+            <template v-if="formData.passwordIsPin">Use password</template>
+            <template v-else>Use pin</template>
+          </v-chip>
         </v-sheet>
         <v-sheet v-else-if="(formData.step == 3)">
           <v-checkbox
@@ -95,7 +116,7 @@ import { useUserStore } from '@/store/user'
 import { reactive, ref, watch, watchEffect } from 'vue'
 import { useRoute } from "vue-router";
 
-const { signUp, signIn, checkUsername, checkEmail } = useUserStore()
+const { signUp, signIn } = useUserStore()
 const route = useRoute();
 const form = ref(null);
 const formData = reactive({
@@ -156,8 +177,7 @@ watch(() => route.params.step, (currentValue, oldValue) => {
     router.go(-1);
     return false;
   }
-  //formData.step = route.params.step;
-  //setTimeout(() => form.value.validate(), 0);
+  formData.step = route.params.step;
 });
 
 </script>

@@ -29,11 +29,9 @@ export const useUserStore = defineStore('drsh_user_store', () => {
     function update(data) {
       if (data === undefined || data === null) {
         user.active.authorization = {}
-        user.active.activeClassroom = CONFIG.DEFAULT_CLASSROOM_CODE
         user.active.data = {}
       } else {
         if(data.authorization) user.active.authorization = data.authorization 
-        if(data.activeClassroom) user.active.activeClassroom = data.activeClassroom 
         if(data.data) user.active.data = data.data 
         user.list[user.active.authorization.username] = data;
       }
@@ -41,13 +39,12 @@ export const useUserStore = defineStore('drsh_user_store', () => {
       return true;
     }
 
-    async function signIn (auth, activeClassroom) {
+    async function signIn (auth) {
       if(!auth){ return }
       const result = await api.user.signIn(auth)
       if (result.success) {
         const userResponse = await api.user.get()
         update({authorization: auth, data: userResponse.data})
-        await api.classroom.setActive({code: user.active.activeClassroom})
       }
       return result;
     }
@@ -65,7 +62,6 @@ export const useUserStore = defineStore('drsh_user_store', () => {
     async function signOut(){
       await api.user.signOut();
       update(null);
-      await api.classroom.setActive({code: false})
       return true;
     }
 
@@ -73,9 +69,9 @@ export const useUserStore = defineStore('drsh_user_store', () => {
       if(!auth.classroom_code){
         auth.classroom_code = CONFIG.DEFAULT_CLASSROOM_CODE
       }
-      const result = await api.user.signUp(auth)
-      if (result.success) {
-        update({authorization: result.data})
+      const authResponse = await api.user.signUp(auth)
+      if (authResponse.success) {
+        update({authorization: authResponse.data})
       }
       return result;
     }
@@ -87,11 +83,6 @@ export const useUserStore = defineStore('drsh_user_store', () => {
         await signIn(user.active.authorization);
       }
       return result;
-    }
-
-    async function setActiveClassroom (code) {
-      await api.classroom.setActive({code: code});
-      return update({activeClassroom: code});
     }
 
     function checkUsername (username) {
@@ -112,7 +103,6 @@ export const useUserStore = defineStore('drsh_user_store', () => {
       signUp,
       activate,
       checkUsername,
-      checkEmail,
-      setActiveClassroom
+      checkEmail
     }
   })

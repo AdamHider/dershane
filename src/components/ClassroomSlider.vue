@@ -5,7 +5,7 @@
       :modules="[Navigation, Pagination, Scrollbar, A11y]"
       :slides-per-view="1.3"
       :centeredSlides="true"
-      :initialSlide="classroom.list.findIndex((classroom) => classroom.code == user.active.activeClassroom)"
+      :initialSlide="classroom.list.findIndex((classroom) => classroom.code == user.active.authorization.classroom_code)"
       navigation
       @swiper="onSwiper"
       @slideChange="onSlideChange"
@@ -19,7 +19,7 @@
         </v-card>
       </swiper-slide>
     </swiper>
-    <v-btn rounded="lg" @click="select()" :disabled="(activeItem.code == user.active.activeClassroom)">
+    <v-btn rounded="lg" @click="select()" :disabled="(activeItem.code == user.active.authorization.classroom_code)">
       <template v-if="(activeItem.id !== 0)">
         Enter {{activeItem.title}}
       </template>
@@ -43,7 +43,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
-const { setActiveClassroom, user } = useUserStore()
+const { setActiveClassroom, user, signOut, signIn } = useUserStore()
 const { classroom, getClassrooms } = useClassroomStore();
 if(user.active.data.id){
   await getClassrooms();
@@ -63,7 +63,12 @@ const select = async (index) => {
     //classroomSlider.slideTo(index);
   }
   if(activeItem.value.id == 0) return routerPush('/classroom-join');
-  await setActiveClassroom(activeItem.value.code);
+  const auth = {
+    username: user.active.authorization.username,
+    password: user.active.authorization.password,
+    classroom_code: activeItem.value.code
+  };
+  await signIn(auth);
 };
 
 const onSwiper = (swiper) => {

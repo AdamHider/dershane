@@ -24,6 +24,7 @@
       required: true
     },
     value: String,
+    label: String,
     fieldConfig: Object
   });
   const emit = defineEmits(['update:otp', 'validate:otp']);

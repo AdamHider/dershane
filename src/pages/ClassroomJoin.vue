@@ -39,7 +39,7 @@ import { useRoute } from "vue-router";
 import { useUserStore } from '@/store/user'
 
 const form = ref(null);
-const { setActiveClassroom, user } = useUserStore()
+const { setActiveClassroom, user, signIn, signOut } = useUserStore()
 
 const formData = reactive({
   valid: true,
@@ -60,7 +60,13 @@ const formData = reactive({
 const validate = async function () {
   const { valid } = await form.value.validate()
   if(valid){
-    const isset = await setActiveClassroom(formData.fields.classroom_code.value);
+    const auth = {
+      username: user.active.authorization.username,
+      password: user.active.authorization.password,
+      classroom_code: formData.fields.classroom_code.value
+    };
+    await signOut();
+    const isset = await signIn(auth);
     if(isset) return routerPush('/user-startup');
     formData.fields.classroom_code.errors = 'Error';
   }  

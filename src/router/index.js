@@ -46,6 +46,11 @@ export const  routes = [
   },
   {
     path: '/user-sign-in',
+    redirect: '/user-sign-in/step1'
+  },
+  {
+    path: '/user-sign-in/step:step',
+    name: 'user-sign-in',
     component: () => import('@/pages/UserSignIn.vue'),
   },
   {

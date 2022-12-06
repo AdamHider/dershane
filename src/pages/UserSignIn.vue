@@ -11,27 +11,50 @@
         ref="form"
         v-model="formData.valid"
         @submit.prevent="validate()"
-        lazy-validation
       >
-        <v-text-field
-          v-model="formData.fields.username.value"
-          :rules="formData.fields.username.rules"
-          :error-messages="formData.fields.username.errors"
-          label="Username or e-mail"
-          required
-        ></v-text-field>
-
-        <v-text-field
-          v-model="formData.fields.password.value"
-          :append-icon="formData.fields.password.reveal ? 'mdi-eye' : 'mdi-eye-off'"
-          :rules="formData.fields.password.rules"
-          :error-messages="formData.fields.password.errors"
-          :type="formData.fields.password.reveal ? 'text' : 'password'"
-          counter
-          label="Password"
-          @click:append="formData.fields.password.reveal = !formData.fields.password.reveal"
-        ></v-text-field>
-
+        <v-sheet v-if="(formData.step == 1)">
+          <v-text-field
+            v-model="formData.fields.username.value"
+            :rules="formData.fields.username.rules"
+            :error-messages="formData.fields.username.errors"
+            label="Username or e-mail"
+            required
+          ></v-text-field>
+        </v-sheet>
+        <v-sheet v-else-if="(formData.step == 2)">
+          <v-input v-if="formData.passwordIsPin"
+            v-model="formData.fields.password.value"
+            :rules="formData.fields.password.rules"
+          >
+            <OTPInput 
+              :fieldConfig="formData.fields.password"
+              :default="formData.fields.password.value"
+              @update:otp="formData.valid = $event.valid; formData.fields.password.value = $event.value;"
+              :digit-count="4"
+              label="Password"
+            >
+            </OTPInput>
+          </v-input>
+          <v-text-field v-else
+            v-model="formData.fields.password.value"
+            :append-icon="formData.fields.password.reveal ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="formData.fields.password.rules"
+            :error-messages="formData.fields.password.errors"
+            :type="formData.fields.password.reveal ? 'text' : 'password'"
+            counter
+            label="Password"
+            @click:append="formData.fields.password.reveal = !formData.fields.password.reveal"
+          ></v-text-field>
+          <v-chip
+            variant="text"
+            class="ma-4"
+            :ripple="false" 
+            @click="formData.passwordIsPin = !formData.passwordIsPin; formData.fields.password.value = '';"
+          >
+            <template v-if="formData.passwordIsPin">Use password</template>
+            <template v-else>Use pin</template>
+          </v-chip>
+        </v-sheet>
         <v-btn
           block
           color="success"
@@ -48,26 +71,31 @@
 </template>
 
 <script setup >
-import { routerPush } from '@/router/index'
+import  OTPInput from '@/components/OTPInput'
+import { routerPush, router } from '@/router/index'
 import { useUserStore } from '@/store/user'
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, watch } from 'vue'
+import { useRoute } from "vue-router";
 
 const form = ref(null);
+const route = useRoute();
 
 const formData = reactive({
-  valid: false,
+  step: route.params.step,
+  passwordIsPin: true,
+  valid: true,
   fields: {
     username: {
-      value: 'admin888',
+      value: '',
       rules: [
         v => !!v || 'Username or e-mail is required',
       ],
     }, 
     password: {
-      value: 'aaaa1111',
+      value: '',
       rules: [
         v => !!v || 'Required.',
-        v => (/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,}$/.test(v)) || 'Password must contain at least one digit, be of latin and min 8 characters',
+        v => (/^[0-9a-zA-Z]{4,}$/.test(v)) || 'Password must contain at least one digit, be of latin and min 8 characters',
       ],
       errors: '',
       reveal: false,
@@ -77,22 +105,29 @@ const formData = reactive({
 
 const { signIn } = useUserStore()
 
+const steps = [
+  '', 'password', 'password', 'terms'
+];
+
 const validate = async function () {
-  const { valid } = await form.value.validate()
-  if (valid) {
-    const result = await signIn({
+  if (formData.step == 2){
+    const user_auth = {
       username: formData.fields.username.value,
       password: formData.fields.password.value
-    });
-    if (result.success) {
-      return routerPush('/user-startup');
-    } else {
-      formData.fields.username.errors = result.message;
-      formData.fields.password.errors = result.message;
-    }
+    };
+    const logged = await signIn(user_auth);
+    if(logged.success) return routerPush('/user-startup');
+    return;
   }
+  if (formData.valid) formData.step++
+  return routerPush('/user-sign-in/step'+formData.step);
 }
-onMounted(() => {
-  form.value.validate();
+
+watch(() => route.params.step, (currentValue, oldValue) => {
+  if(!formData.valid && route.params.step > formData.step){
+    router.go(-1);
+    return false;
+  }
+  formData.step = route.params.step;
 });
 </script>
