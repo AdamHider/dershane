@@ -55,7 +55,10 @@ export const useUserStore = defineStore('drsh_user_store', () => {
     async function autoSignIn () {
       const activeUser = await api.user.get();
       if(user.active.data.id && user.active.data.id != activeUser.data.id){
-        await signIn(user.active.authorization);
+        const result = await signIn(user.active.authorization);
+        if(!result.success){
+          signOut();
+        }
       }
     }
 

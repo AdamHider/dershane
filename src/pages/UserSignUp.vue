@@ -7,25 +7,44 @@
   </v-app-bar>
   <page-container no-bottom-bar="true" container-class="pa-0" align="end">
     <v-sheet color="white" class="text-center pl-4 pr-4 pt-6 pb-6 rounded-t-xl ">
-      <v-form
+      <v-form 
         ref="form"
-        v-model="formData.valid"
-        @submit.prevent="validate()"
-      >
+        v-model="formData.valid" 
+        @submit.prevent="validate()">
         <v-sheet v-if="(formData.step == 1)">
-          <OTPInput
-            :digit-count="4"
-          ></OTPInput>
-            <v-text-field
-              v-model="formData.fields.password.value"
-              :append-icon="formData.fields.password.reveal ? 'mdi-eye' : 'mdi-eye-off'"
-              :rules="formData.fields.password.rules"
-              :error-messages="formData.fields.password.errors"
-              :type="formData.fields.password.reveal ? 'text' : 'password'"
-              counter
-              label="Password"
-              @click:append="formData.fields.password.reveal = !formData.fields.password.reveal"
-            ></v-text-field>
+          <div v-if="formData.passwordIsPin">
+            <v-input
+            v-model="formData.fields.password.value"
+            :rules="formData.fields.password.rules"
+          >
+            <OTPInput 
+              :fieldConfig="formData.fields.password"
+              :default="formData.fields.password.value"
+              @update:otp="formData.valid = $event.valid; formData.fields.password.value = $event.value;"
+              :digit-count="4"
+            >
+            </OTPInput>
+            </v-input>
+          </div>
+          <v-text-field v-else
+            v-model="formData.fields.password.value"
+            :append-icon="formData.fields.password.reveal ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="formData.fields.password.rules"
+            :error-messages="formData.fields.password.errors"
+            :type="formData.fields.password.reveal ? 'text' : 'password'"
+            counter
+            label="Password"
+            @click:append="formData.fields.password.reveal = !formData.fields.password.reveal"
+          ></v-text-field>
+          <v-chip
+            variant="text"
+            class="ma-4"
+            :ripple="false" 
+            @click="formData.passwordIsPin = !formData.passwordIsPin; formData.fields.password.value = '';"
+          >
+            <template v-if="formData.passwordIsPin">Use password</template>
+            <template v-else>Use pin</template>
+          </v-chip>
         </v-sheet>
         <v-sheet v-else-if="(formData.step == 2)">
             <v-text-field
@@ -81,20 +100,21 @@ const route = useRoute();
 const form = ref(null);
 const formData = reactive({
   step: route.params.step,
+  passwordIsPin: true,
   valid: true,
   fields: {
     password: {
-      value: 'aaaa1111',
+      value: '',
       rules: [
         v => !!v || 'Required.',
-        v => (/^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,}$/.test(v)) || 'Password must contain at least one digit, be of latin and min 8 characters',
+        v => (/^[0-9a-zA-Z]{4,}$/.test(v)) || 'Password must contain at least one digit, be of latin and min 8 characters',
       ],
       errors: '',
       reveal: false,
       required: true
     },
     passwordConfirm: {
-      value: 'aaaa1111',
+      value: '',
       rules: [
         v => !!v || 'Required.',
         v => (v === formData.fields.password.value) || 'Your passwords are different',
@@ -136,8 +156,8 @@ watch(() => route.params.step, (currentValue, oldValue) => {
     router.go(-1);
     return false;
   }
-  formData.step = route.params.step;
-  setTimeout(() => form.value.validate(), 0);
+  //formData.step = route.params.step;
+  //setTimeout(() => form.value.validate(), 0);
 });
 
 </script>
