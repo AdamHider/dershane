@@ -33,13 +33,14 @@
             :type="formData.fields.password.reveal ? 'text' : 'password'"
             counter
             label="Password"
+            autocomplete="off"
             @click:append="formData.fields.password.reveal = !formData.fields.password.reveal"
           ></v-text-field>
           <v-chip
             variant="text"
             class="ma-4"
             :ripple="false" 
-            @click="formData.passwordIsPin = !formData.passwordIsPin; formData.fields.password.value = '';"
+            @click="formData.passwordIsPin = !formData.passwordIsPin"
           >
             <template v-if="formData.passwordIsPin">Use password</template>
             <template v-else>Use pin</template>
@@ -66,13 +67,14 @@
             :type="formData.fields.passwordConfirm.reveal ? 'text' : 'password'"
             counter
             label="Confirm password"
+            autocomplete="off"
             @click:append="formData.fields.passwordConfirm.reveal = !formData.fields.passwordConfirm.reveal"
           ></v-text-field>
           <v-chip
             variant="text"
             class="ma-4"
             :ripple="false" 
-            @click="formData.passwordIsPin = !formData.passwordIsPin; formData.fields.password.value = '';"
+            @click="formData.passwordIsPin = !formData.passwordIsPin"
           >
             <template v-if="formData.passwordIsPin">Use password</template>
             <template v-else>Use pin</template>

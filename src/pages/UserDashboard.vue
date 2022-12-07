@@ -12,18 +12,14 @@
     <page-container no-bottom-bar="true" container-class="pa-0" align="end">
         <v-sheet color="white" class="text-center pl-4 pr-4 pt-6 pb-6 rounded-t-xl ">
             <h2>{{user.active.data.name}}</h2>
-            <img :src="profile.data.config.appearance.hero"/>
         </v-sheet>
     </page-container>
 </template>
 
 <script setup>
 import { useUserStore } from '@/store/user'
-import { useProfile } from '@/composable/useProfile.js'
 
 const { user } = useUserStore()
-const { profile, getProfile } = useProfile();
-getProfile();
 
 
 

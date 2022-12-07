@@ -73,19 +73,11 @@ export class Api extends ApiService{
         }
     }
     classroom = {
-        get: (params) =>  {
+        getActive: (params) =>  {
             return this.post('classroom', 'getItem', params)
         },
         getList: (params) =>  {
             return this.post('classroom', 'getList', params)
-        },
-        setActive: (params) => {
-            return this.post('classroom', 'setActive', params);
         }
-    }
-    profile = {
-        get: (params) =>  {
-            return this.post('profile', 'getItem', params)
-        },
     }
 }

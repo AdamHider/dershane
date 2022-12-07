@@ -44,7 +44,8 @@
                         :disabled="(userItem.data.id == user.active.data.id)"
                         icon="mdi-information"
                         variant="text"
-                        @click="signIn(userItem.authorization, userItem.activeClassroom); dialogOpened = false;"
+                        :loading="btnLoading[index]"
+                        @click="switchUser(userItem, index)"
                     >Sign In</v-btn>
                     </template>
                 </v-list-item>
@@ -64,7 +65,13 @@ import ClassroomSlider from '@/components/ClassroomSlider.vue'
 import PageHeader from '@/components/PageHeader.vue'
 
 const dialogOpened = ref(false);
-
+const btnLoading = ref([]);
+const switchUser = async (userItem, key) => {
+    btnLoading.value[key] = true;
+    await signIn(userItem.authorization, userItem.activeClassroom); 
+    btnLoading.value[key] = false;
+    dialogOpened.value = false;
+}
 
 const { signOut, signIn, user, isAuthorized } = useUserStore()
 

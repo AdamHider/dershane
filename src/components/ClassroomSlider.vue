@@ -18,6 +18,14 @@
           </v-img>
         </v-card>
       </swiper-slide>
+      <swiper-slide :class="'text-center'" @click="select(false)">
+        <v-card class="ma-3">
+          <v-img class="align-end text-white  pa-3" cover height="300" >
+            <v-card-title>{{joinSlide.title}}</v-card-title>
+            <v-card-subtitle class="pt-4">{{joinSlide.code}}</v-card-subtitle>
+          </v-img>
+        </v-card>
+      </swiper-slide>
     </swiper>
     <v-btn rounded="lg" @click="select()" :disabled="(activeItem.code == user.active.authorization.classroom_code)">
       <template v-if="(activeItem.id !== 0)">
@@ -33,7 +41,7 @@
 import { routerPush, router } from '@/router/index'
 import { ref } from 'vue';
 import { useUserStore } from '@/store/user'
-import { useClassroomStore } from '@/store/classroom'
+import { useClassroom } from '@/composable/useClassroom'
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { CONFIG } from '@/config.js'
@@ -44,38 +52,52 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
 const { setActiveClassroom, user, signOut, signIn } = useUserStore()
-const { classroom, getClassrooms } = useClassroomStore();
+const { classroom, getList } = useClassroom();
 if(user.active.data.id){
-  await getClassrooms();
+  await getList();
 }
 
 const activeItem = ref({});
 const classroomSlider = ref(null);
-classroom.list.push({
+const joinSlide = {
   id: 0,
   code: '',
   title: 'Join classroom'
-})
+}
 
 const select = async (index) => {
-  if(index){
+  if(index !== false){
     activeItem.value = classroom.list[index];
     //classroomSlider.slideTo(index);
+  } else {
+    return routerPush('/classroom-join');
   }
-  if(activeItem.value.id == 0) return routerPush('/classroom-join');
+  if(activeItem.value.code == user.active.authorization.classroom_code){
+    return false;
+  }
   const auth = {
     username: user.active.authorization.username,
     password: user.active.authorization.password,
     classroom_code: activeItem.value.code
   };
   await signIn(auth);
+  return routerPush('/user-dashboard');
 };
 
 const onSwiper = (swiper) => {
-  activeItem.value = classroom.list[swiper.activeIndex];
+  console.log('swiper')
+  if(classroom.list[swiper.activeIndex]){
+    activeItem.value = classroom.list[swiper.activeIndex];
+  } else {
+    activeItem.value = joinSlide;
+  }
 };
 const onSlideChange = (swiper) => {
-  activeItem.value = classroom.list[swiper.activeIndex];
+  if(classroom.list[swiper.activeIndex]){
+    activeItem.value = classroom.list[swiper.activeIndex];
+  } else {
+    activeItem.value = joinSlide;
+  }
 };
 
 </script>

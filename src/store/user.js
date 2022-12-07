@@ -3,6 +3,9 @@ import { api } from '@/services/'
 import Storage from '@/utils/storage'
 import { computed, ref, reactive, watch } from 'vue'
 import { CONFIG } from '@/config.js'
+import { useAppMessage } from '@/composable/useAppMessage';
+
+const { showMessage } = useAppMessage();
 
 const userDefault = {
   active: {
@@ -46,6 +49,7 @@ export const useUserStore = defineStore('drsh_user_store', () => {
         const userResponse = await api.user.get()
         update({authorization: auth, data: userResponse.data})
       }
+      showMessage('You have signed successfully!');
       return result;
     }
 
@@ -73,7 +77,7 @@ export const useUserStore = defineStore('drsh_user_store', () => {
       if (authResponse.success) {
         update({authorization: authResponse.data})
       }
-      return result;
+      return authResponse;
     }
 
     async function activate (code) {
