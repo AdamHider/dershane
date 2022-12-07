@@ -164,7 +164,7 @@ const validate = async function () {
     const authResponse = await signUp(user_auth);
     if (authResponse.success) {
       const logged = await signIn(authResponse.data);
-      if(logged.success) return routerPush('/user-startup');
+      if(logged.success) return routerPush('/user-dashboard');
     } else {
       formData.fields[steps[formData.step]].errors = result.message;
     }

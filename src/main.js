@@ -1,9 +1,3 @@
-/**
- * main.js
- *
- * Bootstraps Vuetify and other plugins then mounts the App`
- */
-
 // Components
 import App from './App.vue'
 import PageContainer from './components/PageContainer.vue'
@@ -18,6 +12,9 @@ import { useAppMessage } from '@/composable/useAppMessage'
 
 // Plugins
 import { registerPlugins } from '@/plugins'
+
+//Styles
+import '@/styles/reset.css';
 
 
 const app = createApp(App)

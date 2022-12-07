@@ -1,0 +1,26 @@
+
+
+/*=====================*/
+/*=====V-CONTAINER=====*/
+/*=====================*/
+
+.v-container.absolute{
+    position: absolute;
+    width: 100%;
+    left: 0;
+}
+.v-container.absolute.top{
+    bottom: 100%;
+    left: 0;
+}
+.v-container.absolute.top.text-center > .v-responsive{
+    margin: 0 auto;
+}
+
+
+/*=====================*/
+/*=======V-SHEET=======*/
+/*=====================*/
+.v-sheet {
+    position: relative;
+}
