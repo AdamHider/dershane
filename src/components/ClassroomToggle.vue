@@ -14,20 +14,12 @@
                 >
                     <v-avatar class="mr-2">
                         <v-img
-<<<<<<< HEAD
                             :src="`${CONFIG.API_HOST}${classroom.active?.introimage}`"
-=======
-                            :src="`${CONFIG.API_HOST}${classroom.active.introimage}`"
->>>>>>> bca25f4ada655e47ee70020d974a5b5c4ff3a689
                             alt="John"
                             cover
                         ></v-img>
                     </v-avatar>
-<<<<<<< HEAD
                     <b>{{classroom.active?.title}}</b>
-=======
-                    <b>{{classroom.active.title}}</b>
->>>>>>> bca25f4ada655e47ee70020d974a5b5c4ff3a689
                     <v-icon end icon="mdi-swap-horizontal"></v-icon>
                 </v-chip>
             </template>
