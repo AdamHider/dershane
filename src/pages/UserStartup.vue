@@ -8,7 +8,11 @@
     <page-container no-bottom-bar="true" container-class="pa-0" align="center">
       <PageHeader v-if="user.active?.data.id" title="User Dashboard" subtitle="Choose your classroom" text-color="white"/>
       <Suspense v-if="user.active?.data.id">
-        <ClassroomSlider/>
+        <ClassroomSlider 
+            slidesPerView="1.3"
+            centerAligned="true"
+            withButton="true"
+            slideHeight="300"/>
       </Suspense>
       <v-sheet color="transparent" class="text-center pa-4">
         <div v-if="user.active?.data.id" class="d-flex flex-no-wrap justify-space-between align-center">

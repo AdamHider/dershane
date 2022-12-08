@@ -8,6 +8,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { router } from '@/router'
 import { useUserStore } from '@/store/user'
+import { useClassroom } from '@/composable/useClassroom'
 import { useAppMessage } from '@/composable/useAppMessage'
 
 // Plugins
@@ -26,10 +27,19 @@ app.component('page-container', PageContainer);
 
 registerPlugins(app)
 
-const { autoSignIn } = useUserStore()
-useAppMessage()
+async function init () {
 
-autoSignIn()
+    const { autoSignIn } = useUserStore()
+
+    await autoSignIn()
+
+    const { getActive } = useClassroom()
+    getActive();
+}
+
+init();
+
+useAppMessage()
 
 app.mount('#app')
 
