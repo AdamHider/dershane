@@ -4,10 +4,11 @@ import PageContainer from './components/PageContainer.vue'
 
 
 // Composables
-import { createApp } from 'vue'
+import { createApp, watch } from 'vue'
 import { createPinia } from 'pinia'
 import { router } from '@/router'
 import { useUserStore } from '@/store/user'
+import { useClassroom } from '@/composable/useClassroom'
 import { useAppMessage } from '@/composable/useAppMessage'
 
 // Plugins
@@ -26,10 +27,25 @@ app.component('page-container', PageContainer);
 
 registerPlugins(app)
 
-const { autoSignIn } = useUserStore()
-useAppMessage()
+async function init () {
 
-autoSignIn()
+    const { user, autoSignIn } = useUserStore()
+
+    await autoSignIn()
+
+    const { getActive, getList } = useClassroom()
+    getActive();
+
+    watch(user.active, (newData, oldData) => {
+        console.log('watched');
+        getActive();
+        getList();
+    });
+}
+
+init();
+
+useAppMessage()
 
 app.mount('#app')
 

@@ -3,16 +3,16 @@
     <swiper
       ref="classroomSlider"
       :modules="[Navigation, Pagination, Scrollbar, A11y]"
-      :slides-per-view="1.3"
-      :centeredSlides="true"
+      :slides-per-view="props.slidesPerView"
+      :centeredSlides="props.centerAligned"
       :initialSlide="classroom.list.findIndex((classroom) => classroom.code == user.active.authorization.classroom_code)"
-      navigation
+      :navigation="props.navigation"
       @swiper="onSwiper"
       @slideChange="onSlideChange"
     >
       <swiper-slide v-for="(classroomItem, index) in classroom.list" :key="index" :class="'text-center'" @click="select(index)">
         <v-card class="ma-3">
-          <v-img class="align-end text-white  pa-3" cover height="300" :src="(CONFIG.API_HOST+classroomItem.fulltext_image)">
+          <v-img class="align-end text-white pa-3" cover :src="(CONFIG.API_HOST+classroomItem.fulltext_image)" :height="props.slideHeight">
             <v-card-title>{{classroomItem.title}}</v-card-title>
             <v-card-subtitle class="pt-4">{{classroomItem.code}}</v-card-subtitle>
           </v-img>
@@ -20,14 +20,13 @@
       </swiper-slide>
       <swiper-slide :class="'text-center'" @click="select(false)">
         <v-card class="ma-3">
-          <v-img class="align-end text-white  pa-3" cover height="300" >
-            <v-card-title>{{joinSlide.title}}</v-card-title>
-            <v-card-subtitle class="pt-4">{{joinSlide.code}}</v-card-subtitle>
+          <v-img class="align-center pa-3" cover :width="(props.slideHeight*2)" :height="props.slideHeight">
+            <v-icon icon="mdi-plus" size="x-large"></v-icon>
           </v-img>
         </v-card>
       </swiper-slide>
     </swiper>
-    <v-btn rounded="lg" @click="select()" :disabled="(activeItem.code == user.active.authorization.classroom_code)">
+    <v-btn v-if="props.withButton" rounded="lg" @click="select()" :disabled="(activeItem.code == user.active.authorization.classroom_code)">
       <template v-if="(activeItem.id !== 0)">
         Enter {{activeItem.title}}
       </template>
@@ -51,10 +50,18 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
+const props = defineProps({
+    slidesPerView: Number,
+    centerAligned: Boolean,
+    withButton: Boolean,
+    slideHeight: String,
+    navigation: Boolean
+  });
 const { setActiveClassroom, user, signOut, signIn } = useUserStore()
 const { classroom, getList } = useClassroom();
+console.log(classroom.list);
 if(user.active.data.id){
-  await getList();
+  getList();
 }
 
 const activeItem = ref({});

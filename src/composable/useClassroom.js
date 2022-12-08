@@ -1,8 +1,6 @@
 import { reactive, watch } from 'vue'
 import { api } from '@/services/'
-import { useUserStore } from '@/store/user'
 
-const { user } = useUserStore()
 
 const classroom = reactive({
     active: {},
@@ -10,10 +8,6 @@ const classroom = reactive({
 });
 
 export function useClassroom() {
-    watch(user.active, (newData, oldData) => {
-        getActive();
-        getList();
-    });
 
     async function getActive () {
         try{

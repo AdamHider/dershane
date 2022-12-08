@@ -8,7 +8,11 @@
     <page-container no-bottom-bar="true" container-class="pa-0" align="center">
       <PageHeader v-if="user.active?.data.id" title="User Dashboard" subtitle="Choose your classroom" text-color="white"/>
       <Suspense v-if="user.active?.data.id">
-        <ClassroomSlider/>
+        <ClassroomSlider 
+            slidesPerView="1.3"
+            centerAligned="true"
+            withButton="true"
+            slideHeight="300"/>
       </Suspense>
       <v-sheet color="transparent" class="text-center pa-4">
         <div v-if="user.active?.data.id" class="d-flex flex-no-wrap justify-space-between align-center">
@@ -25,7 +29,7 @@
                 <v-btn variant="text" color="white" to="/user-sign-up">sign up</v-btn> 
             </div>
         </div>
-        <v-divider color="white" class="mt-2 mb-2"></v-divider>
+        <v-divider v-if="(Object.keys(user.list).length > 0)" color="white" class="mt-2 mb-2"></v-divider>
         <v-btn v-if="(Object.keys(user.list).length > 0)" variant="text" color="white" rounded="lg" @click="dialogOpened=true">Choose existing accounts</v-btn>
       </v-sheet>
       <v-dialog v-model="dialogOpened">
@@ -36,12 +40,12 @@
             <v-list lines="two">
                 <v-list-item
                     v-for="(userItem, index) in user.list" :key="index"
-                    :title="userItem.data.name"
+                    :title="userItem.data?.name"
                     :subtitle="'Description'"
                 >
                     <template v-slot:append>
                     <v-btn
-                        :disabled="(userItem.data.id == user.active.data.id)"
+                        :disabled="(userItem.data?.id == user.active.data.id)"
                         icon="mdi-information"
                         variant="text"
                         :loading="btnLoading[index]"
@@ -63,6 +67,7 @@ import { ref } from 'vue'
 import { useUserStore } from '@/store/user'
 import ClassroomSlider from '@/components/ClassroomSlider.vue'
 import PageHeader from '@/components/PageHeader.vue'
+import { routerPush } from '@/router/index'
 
 const dialogOpened = ref(false);
 const btnLoading = ref([]);
@@ -71,6 +76,7 @@ const switchUser = async (userItem, key) => {
     await signIn(userItem.authorization, userItem.activeClassroom); 
     btnLoading.value[key] = false;
     dialogOpened.value = false;
+    return routerPush('/user-dashboard');
 }
 
 const { signOut, signIn, user, isAuthorized } = useUserStore()

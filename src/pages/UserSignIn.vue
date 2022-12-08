@@ -116,7 +116,7 @@ const validate = async function () {
       password: formData.fields.password.value
     };
     const logged = await signIn(user_auth);
-    if(logged.success) return routerPush('/user-startup');
+    if(logged.success) return routerPush('/user-dashboard');
     return;
   }
   if (formData.valid) formData.step++
