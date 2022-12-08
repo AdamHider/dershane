@@ -8,6 +8,14 @@ const classroom = reactive({
 });
 
 export function useClassroom() {
+<<<<<<< HEAD
+=======
+    const { user } = useUserStore();
+    watch(user.active, (newData, oldData) => {
+        getActive();
+        getList();
+    });
+>>>>>>> bca25f4ada655e47ee70020d974a5b5c4ff3a689
 
     async function getActive () {
         try{

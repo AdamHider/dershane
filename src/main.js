@@ -27,25 +27,10 @@ app.component('page-container', PageContainer);
 
 registerPlugins(app)
 
-async function init () {
-
-    const { user, autoSignIn } = useUserStore()
-
-    await autoSignIn()
-
-    const { getActive, getList } = useClassroom()
-    getActive();
-
-    watch(user.active, (newData, oldData) => {
-        console.log('watched');
-        getActive();
-        getList();
-    });
-}
-
-init();
-
+const { autoSignIn } = useUserStore()
 useAppMessage()
+
+autoSignIn()
 
 app.mount('#app')
 
