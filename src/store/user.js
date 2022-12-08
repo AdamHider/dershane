@@ -26,6 +26,9 @@ export const userStorage = new Storage('drsh_user_store')
 
 export const useUserStore = defineStore('drsh_user_store', () => {
     let user = reactive(userStorage.get() || userDefault)
+
+    const userAuthorization = reactive(user.active.authorization); 
+    const userData = reactive(user.active.data); 
     
     const isAuthorized = computed(() => user.active.data.id !== null)
   
@@ -60,6 +63,9 @@ export const useUserStore = defineStore('drsh_user_store', () => {
         if(!result.success){
           signOut();
         }
+      } 
+      if(activeUser.data.id != 0){
+        update({data: activeUser.data})
       }
     }
 
@@ -99,6 +105,8 @@ export const useUserStore = defineStore('drsh_user_store', () => {
     
     return {
       user,
+      userAuthorization,
+      userData,
       isAuthorized,
       update,
       signIn,

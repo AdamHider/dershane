@@ -6,11 +6,12 @@
         >
             <template v-slot:activator="{ props }">
                 <v-chip 
-                    class="ma-2" 
+                    class="ma-2  pl-0" 
                     color="white" 
                     v-bind="props" 
                     label  
                     variant="text"
+                     size="large"
                 >
                     <v-avatar class="mr-2">
                         <v-img
@@ -25,7 +26,7 @@
             </template>
         <v-sheet class="text-center rounded-xl pt-4 pb-4">
             <ClassroomSlider 
-                slidesPerView="1.5"
+                :slidesPerView=1.5
                 :centerAligned="false"
                 :withButton="false"
                 slideHeight="100"

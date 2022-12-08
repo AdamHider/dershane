@@ -16,6 +16,12 @@
 .v-container.absolute.top.text-center > .v-responsive{
     margin: 0 auto;
 }
+.v-container.relative{
+    position: relative;
+    z-index: 1;
+}
+
+
 
 
 /*=====================*/
