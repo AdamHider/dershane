@@ -1,16 +1,19 @@
 <template>
-    <div ref="otpCont" class="v-digit-container">
-      <input
-        type="text"
-        class="v-digit-box ma-2"
-        v-for="(el, ind) in digits"
-        :key="el+ind"
-        v-model="digits[ind]"
-        :autofocus="ind === 0"
-        maxlength="1"
-        @keydown="handleKeyDown($event, ind)"
-      >
-    <slot/>
+    <div class="otp-container">
+      <v-label>{{label}}</v-label>
+      <div ref="otpCont" class="v-digit-container">
+        <input
+          :type="type"
+          class="v-digit-box ml-2 mr-2"
+          v-for="(el, ind) in digits"
+          :key="el+ind"
+          v-model="digits[ind]"
+          :autofocus="ind === 0"
+          maxlength="1"
+          @keydown="handleKeyDown($event, ind)"
+        >
+      <slot/>
+      </div>
     </div>
   </template>
 
@@ -24,6 +27,7 @@
       required: true
     },
     value: String,
+    type: String,
     label: String,
     fieldConfig: Object
   });
@@ -93,12 +97,18 @@
 </script>
 
 <style scoped>
-
-.v-digit-container{
+.otp-container{
   width: 100%;
 }
+.otp-container .v-label{
+  --v-field-label-scale: 0.75em;
+  font-size: var(--v-field-label-scale);
+}
+.v-digit-container{
+  
+}
 .v-digit-box {
-  height: 4rem;
+  height: 56px;
   width: 3rem;
   font-size: 3rem;
   border-bottom: 1px solid lightgray;

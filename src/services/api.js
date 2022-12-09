@@ -39,6 +39,11 @@ export class ApiService {
 
 
 export class Api extends ApiService{
+    achievements = {
+        getList: (params) => {
+            return this.post('achievement', 'getList', params)
+        }
+    }
     courses = {
         getList: (params) => {
             return this.post('category', 'getList', params)
@@ -47,6 +52,11 @@ export class Api extends ApiService{
     lessons = {
         getList: (params) => {
             return this.post('lessons', 'getList', params)
+        }
+    }
+    notifications = {
+        getList: (params) => {
+            return this.post('notification', 'getList', params)
         }
     }
     user = {
@@ -64,6 +74,12 @@ export class Api extends ApiService{
         },
         activate: (params) => {
             return this.post('user', 'activate', params)
+        },
+        save: (params) => {
+            return this.post('user', 'saveItem', params)
+        },
+        savePassword: (params) => {
+            return this.post('user', 'savePassword', params)
         },
         checkUsername: (params) => {
             return this.post('user', 'checkUsername', params);

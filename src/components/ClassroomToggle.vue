@@ -25,6 +25,7 @@
                 </v-chip>
             </template>
         <v-sheet class="text-center rounded-xl pt-4 pb-4">
+            <h4>Choose your classroom</h4>
             <ClassroomSlider 
                 :slidesPerView=1.5
                 :centerAligned="false"

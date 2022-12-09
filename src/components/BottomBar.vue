@@ -18,4 +18,3 @@
         </v-btn>
     </v-bottom-navigation>
 </template>
-  

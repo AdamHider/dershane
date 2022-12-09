@@ -71,6 +71,7 @@ import { routerPush } from '@/router/index'
 
 const dialogOpened = ref(false);
 const btnLoading = ref([]);
+
 const switchUser = async (userItem, key) => {
     btnLoading.value[key] = true;
     await signIn(userItem.authorization, userItem.activeClassroom); 
@@ -79,7 +80,7 @@ const switchUser = async (userItem, key) => {
     return routerPush('/user-dashboard');
 }
 
-const { signOut, signIn, user, isAuthorized } = useUserStore()
+const { signOut, signIn, user } = useUserStore()
 
 
 </script>

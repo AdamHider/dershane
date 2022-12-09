@@ -1,18 +1,20 @@
 <template>
   <v-app>
     <AppBackground/>
-    <router-view/>
+    <router-view v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
     <AppMessage/>
   </v-app>
 </template>
-<script>
+<script setup>
 import AppBackground from '@/components/AppBackground.vue';
 import AppMessage from '@/components/AppMessage.vue';
+
+import { useRoute } from "vue-router";
   
-export default {
-  components: {
-    AppBackground,
-    AppMessage
-  }
-};
+const route = useRoute();
+
 </script>

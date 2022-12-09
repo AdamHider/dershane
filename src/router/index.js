@@ -2,15 +2,16 @@ import { createRouter, createWebHistory } from 'vue-router'
 //import routes from '~pages'
 import { useUserStore } from '@/store/user'
 
+
 export const  routes = [
   {
-    path: '',
-    redirect: '/home'
+    path: '/',
+    
   },
   {
     path: '/home',
+    meta: { requiresAuth: true },
     component: () => import('@/pages/Home.vue'),
-    meta: { requiresAuth: true }
   },
   {
     path: '/lessons-:category_id',
@@ -37,8 +38,8 @@ export const  routes = [
   },
   {
     path: '/user-dashboard',
+    meta: { requiresAuth: true },
     component: () => import('@/pages/UserDashboard.vue'),
-    meta: { requiresAuth: true }
   },
   {
     path: '/user-startup',
@@ -65,7 +66,23 @@ export const  routes = [
   {
     path: '/user-activate-:activation_code',
     component: () => import('@/pages/UserActivate.vue'),
-  }
+  },
+  {
+    path: '/user-edit',
+    component: () => import('@/pages/UserEdit.vue'),
+  },
+  {
+    path: '/user-password-edit',
+    component: () => import('@/pages/UserPasswordEdit.vue'),
+  },
+  {
+    path: '/user-achievements',
+    component: () => import('@/pages/UserAchievements.vue'),
+  },
+  {
+    path: '/settings',
+    component: () => import('@/pages/Settings.vue'),
+  },
 ];
 
 export const router = createRouter({
