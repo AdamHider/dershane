@@ -59,7 +59,10 @@ header{
 /*=====================*/
 /*========V-CARD=======*/
 /*=====================*/
-.v-card-title,
-.v-card-subtitle{
+div.v-card div.v-card-title{
+    line-height: 1.5rem;
+}
+div.v-card-title,
+div.v-card-subtitle{
     white-space: break-spaces !important;
 }

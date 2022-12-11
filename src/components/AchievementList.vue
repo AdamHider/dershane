@@ -15,17 +15,11 @@
                         >
                             <v-img :src="`/src/${achievement.image}`"></v-img>
                         </v-avatar>
-                        <div>
-                            <v-card-title class="text-h7">{{achievement.description.title.ru}}</v-card-title>
-                            <v-card-subtitle>{{achievement.description.description.ru}}</v-card-subtitle>
-                            <v-card-text>
+                        <v-container fluid>
+                            <v-card-title class="pa-0 text-subtitle-1">{{achievement.description.title.ru}}</v-card-title>
+                            <v-card-subtitle class="px-0 pt-2">{{achievement.description.description.ru}}</v-card-subtitle>
+                            <v-card-text class="pa-0">
                                 <v-sheet color="transparent">
-                                    <v-progress-linear 
-                                        color="primary"
-                                        :model-value="achievement.achievement_progress.percentage" 
-                                        :height="20" 
-                                        rounded="lg"
-                                    ></v-progress-linear>
                                     <v-container class="pt-2 pb-2">
                                         <v-row>
                                             <v-col cols="6" class="pl-0 pr-0 text-left"></v-col>
@@ -34,9 +28,15 @@
                                             </v-col>
                                         </v-row>
                                     </v-container>
+                                    <v-progress-linear 
+                                        color="primary"
+                                        :model-value="achievement.achievement_progress.percentage" 
+                                        :height="20" 
+                                        rounded="lg"
+                                    ></v-progress-linear>
                                 </v-sheet>
                             </v-card-text>
-                        </div>
+                        </v-container>
                     </div>
                 </v-card>
             </v-col>

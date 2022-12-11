@@ -6,7 +6,7 @@ import { useUserStore } from '@/store/user'
 export const  routes = [
   {
     path: '/',
-    
+    redirect: '/home'
   },
   {
     path: '/home',
