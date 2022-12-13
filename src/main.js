@@ -17,6 +17,8 @@ import { registerPlugins } from '@/plugins'
 //Styles
 import '@/styles/reset.css';
 
+import './registerServiceWorker'
+
 
 const app = createApp(App)
 

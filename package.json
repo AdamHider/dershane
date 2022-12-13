@@ -2,8 +2,8 @@
   "name": "dershane",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
+    "dev": "vite",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -13,6 +13,7 @@
     "axios": "^1.2.0",
     "jquery": "^3.6.1",
     "pinia": "^2.0.27",
+    "register-service-worker": "^1.7.2",
     "roboto-fontface": "*",
     "swiper": "^8.4.5",
     "vue": "^3.2.38",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.0.3",
+    "@vue/cli-plugin-pwa": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "vite": "^3.2.4",
     "vite-plugin-vuetify": "^1.0.0-alpha.12"
